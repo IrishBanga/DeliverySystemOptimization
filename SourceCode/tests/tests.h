@@ -1,0 +1,12 @@
+#pragma once
+#ifndef SDDS_TESTS_H
+#define SDDS_TESTS_H
+
+extern "C"
+{
+	/*ADDING EXTERNAL HEADERS ->PENDING*/
+	/*OBJECT FILES ->PENDING*/
+	/*LINKING DIRECTORIES ->DONE*/
+}
+
+#endif
