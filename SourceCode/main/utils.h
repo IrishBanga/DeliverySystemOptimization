@@ -1,5 +1,7 @@
 #include "mapping.h"
-
+#define INVALID_WEIGHT 1
+#define INVALID_VOLUME 3
+#define INVALID_POINT 5
 /*
 * Array sizes mentioned in document may be defined as macros in later milestones to be more informative.
 * On hold, as current milestone required desgining data structures only.
@@ -56,4 +58,6 @@ struct Dispatch
 
 
 
+/*FUNCTIONS*/
 
+int validate(int weight, double volume, struct Point valid);
