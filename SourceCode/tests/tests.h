@@ -4,9 +4,9 @@
 
 extern "C"
 {
-	/*ADDING EXTERNAL HEADERS ->PENDING*/
-	/*OBJECT FILES ->PENDING*/
-	/*LINKING DIRECTORIES ->DONE*/
+//#include <main.c>
+#include <mapping.h>
+#include <utils.h>
 }
 
 #endif
