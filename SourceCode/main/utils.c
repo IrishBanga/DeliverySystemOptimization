@@ -1,6 +1,9 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
 #include "utils.h"
 
 /* WILL BE DEVELOPED IN LATER MILESTONES */
+//initial validation for the input from user(only checks the limits of the parameters) also // assists in displaying the particular error with the order based on return value
 int validate(int weight, double volume, struct Point temp)
 {
 	int res = 0;
@@ -9,7 +12,7 @@ int validate(int weight, double volume, struct Point temp)
 	{
 		res = 1;
 	}*/
-	if (weight < 1 || weight > 1000) 
+	if (weight < 1 || weight > 1000) // assists in displaying the particular error with the order
 	{
 		res = INVALID_WEIGHT;
 	}

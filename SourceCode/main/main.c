@@ -14,14 +14,27 @@ int main(void)
 	routeMap = addRoute(&routeMap, &greenRoute);
 	yellowRoute = getYellowRoute();
 	routeMap = addRoute(&routeMap, &yellowRoute);
-	//printMap(&routeMap, 1, 1); //currently, printMap has been modified to print rows with spaces before and after the identifying characters
+	
+
+	struct Dispatch seneca;
+	seneca.map = routeMap;
+	//seneca.current.B = { 0,0,{getBlueRoute()},{0,0,0,0,{0,0}} }; //explicit type conversion and structure changes(MS3);updated init in next lines
+	seneca.current.B = (struct Truck){ 0, 0, getBlueRoute()/*, { 0, 0, {0, 0}, { 0, 0 } }*/ };
+	seneca.current.G = (struct Truck){ 0, 0, getGreenRoute()/*, { 0, 0, {0, 0}, { 0, 0 } }*/ };
+	seneca.current.Y = (struct Truck){ 0, 0, getYellowRoute()/*,{ 0, 0, {0, 0}, { 0, 0 } } */};
+
+	/*seneca.current.B.route = getBlueRoute();
+	seneca.current.G.route = getGreenRoute();
+	seneca.current.Y.route = getYellowRoute();*/
+
+	printMap(&routeMap, 0, 0); //currently, printMap has been modified to print rows with spaces before and after the identifying characters
 	printf("=================\n"
 		   "Seneca Deliveries\n"
 		   "=================\n");
 	int done = 0;
 	int wt = 0;
 	double vol = 0;
-	char temp[4] = "\0";
+	char temp[4] =  "\0";
 	struct Point check = {-1,-1};
 	/* get input; initial validation within constraints */
 	do 
@@ -70,6 +83,7 @@ int main(void)
 				}
 			}		
 		}
+	
 	} while (!done);
 	printf("Thanks for shipping with Seneca!");
 	
