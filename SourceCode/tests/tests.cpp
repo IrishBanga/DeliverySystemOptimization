@@ -3,51 +3,60 @@
 #include "tests.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace testsvalidateANDdistance
+namespace validateTests
 {
 	TEST_CLASS(BLACKBOXTESTS)
 	{
 	public:
-		
-		TEST_METHOD(BB_TestDistance) //trying to test distance() function
-		{
-			Point p1 = { 0,0 };
-			Point p2 = { 3,4 };
-			double actual = distance(&p1, &p2);
-			Assert::AreEqual(5.0,actual); 
-		}
+		////BB_TestDistance ; FOR DEMONSTRATION PURPOSE ONLY
+		//TEST_METHOD(BB_TestDistance) //trying to test distance() function
+		//{
+		//	Point p1 = { 0,0 };
+		//	Point p2 = { 3,4 };
+		//	double actual = distance(&p1, &p2);
+		//	Assert::AreEqual(5.0,actual); 
+		//}
 
-		TEST_METHOD(BB_TestValidate1) //trying to test validate() function
+		TEST_METHOD(BB_TestValidate1) //test validate() function with a valid input
 		{
-			Point p1 = { 0,0 };
-			Point p2 = { 3,4 };
-			int valid = validate(1,1,p1);
+			Point p1 = { 3,2 };
+			int valid = validate(500,.5,p1);
 			Assert::AreEqual(0, valid);
 		}
 
-		TEST_METHOD(BB_TestValidate2) //trying to test validate() function
+		TEST_METHOD(BB_TestValidate2) //test validate() function with invalid weight
 		{
-			Point p1 = { 0,0 };
-			Point p2 = { 3,4 };
-			int valid = validate(10, 1, p2);
-			Assert::AreEqual(0, valid);
+			Point p1 = { 3,4 };
+			int invalid = validate(0, 0.5, p1);
+			Assert::AreEqual(INVALID_WEIGHT, invalid);
 		}
 
-
-		TEST_METHOD(BB_TestValidate3) //trying to test validate() function
+		TEST_METHOD(BB_TestValidate3) //Entering invalid volume
 		{
-			Point p1 = { 0,0 };
-			Point p2 = { 3,4 };
-			int invalid = validate(10, .26, p2);
+			Point p1 = { 7,5 };
+			int invalid = validate(10, .26, p1);
 			Assert::AreEqual(INVALID_VOLUME, invalid);
 		}
 
-		TEST_METHOD(BB_TestValidate4) //trying to test validate() function
+		TEST_METHOD(BB_TestValidate4) //Entering invalid point (column)
 		{
-			Point p1 = { 0,0 };
-			Point p2 = { 26,4 };
-			int invalid = validate(10, .5, p2);
+			Point p1 = { 6,42 };
+			int invalid = validate(10, .5, p1);
 			Assert::AreEqual(INVALID_POINT, invalid);
+		}
+
+		TEST_METHOD(BB_TestValidate5) //Entering invalid point (row)
+		{
+			Point p1 = { 46,2 };
+			int invalid = validate(10, .5, p1);
+			Assert::AreEqual(INVALID_POINT, invalid);
+		}
+
+		TEST_METHOD(BB_TestValidate6) //Entering all invalid parameters
+		{
+			Point p1 = { -1,-1 };
+			int invalid = validate(1500, 1.5, p1);
+			Assert::AreNotEqual(0, invalid); //error code returned may differ based on the way function sets them;hence confirming that it is not a success (i.e, 0 is not returned)
 		}
 	};
 }
