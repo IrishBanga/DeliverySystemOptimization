@@ -301,14 +301,16 @@ public:
 
 		struct Fleet current;
 		current.G.route.routeSymbol = 2;
-		current.B.route.routeSymbol = NULL;
-		current.Y.route.routeSymbol = NULL;
+		current.B.route.routeSymbol = -1;
+		current.Y.route.routeSymbol = -1;
 
 		struct Fleet *fleetCopy = &current;
 		struct Truck *result = getTruckByReference(fleetCopy, 2);
 
 		struct Truck *expected = &current.G;
+
 		Assert::AreEqual(&expected->route.routeSymbol, &result->route.routeSymbol);
+		Assert::IsNotNull(result);
 	};
 
 	// Return NULL when Fleet is empty (no trucks)
