@@ -61,7 +61,7 @@ namespace validateTests
 	};
 }
 
-/*
+
 namespace getSpaceRemainingtests 
 {
     TEST_CLASS(BlackboxTests)
@@ -634,8 +634,8 @@ namespace sortByLimitingFactorTests
              sortByLimitingFactor(dists, &org);
 
              double expectedDists[3][2] = {
-                 {10.0, GREEN},
                  {10.0, BLUE},
+                 {10.0, GREEN},
                  {12.0, YELLOW}
              };
 
@@ -653,7 +653,7 @@ namespace sortByLimitingFactorTests
              org.current.B.CurrentWeight = 400.0;
              org.current.B.CurrentVolume = 15.0;
              org.current.G.CurrentWeight = 625.0;
-             org.current.G.CurrentVolume = 5.0;
+             org.current.G.CurrentVolume = 23.0;
              org.current.Y.CurrentWeight = 625.0;
              org.current.Y.CurrentVolume = 12.0;
 
@@ -1084,10 +1084,10 @@ namespace findTruckAndDiversiontests
 			Route expectedDiversion =
 			{
 				{
-				{19, 22},  // 12V
-				{20, 22},  // 13V
-				{21, 22},  // 14V
-				{22, 22},  // 14U
+				{19, 22},  // 20W
+				{20, 22},  // 21W
+				{21, 22},  // 22W
+				{22, 22},  // 23W
 				},4,DIVERSION
 			};
 
@@ -1121,6 +1121,8 @@ namespace findTruckAndDiversiontests
 			dists[2][1] = GREEN;
 			dists[0][0] = 3.0;
 			dists[0][1] = YELLOW;
+
+			org.nextDayOrders = 0;
 
 			struct OrderInfo order = { 666,.25,{22,22},{-1,-1} };
 			struct OrderInfo* orderTemp = &order;
@@ -1167,4 +1169,3 @@ namespace findTruckAndDiversiontests
 		}
 	};
 }
-*/

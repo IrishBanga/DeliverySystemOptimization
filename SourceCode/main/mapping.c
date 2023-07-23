@@ -229,10 +229,23 @@ struct Route shortestPath(const struct Map* map, const struct Point start, const
 	struct Route possible = { {0,0},0,0 };
 	int close = 0;
 
-	while (!eqPt(current, dest) && close >= 0)
+
+
+	struct Route destP = { {0,0},0,0 };
+	struct Point invalidP = { -1,-1 };
+	destP = getPossibleMoves(map, dest, invalidP); //getting all valid points adjacent to destination
+	int destPclosest = getClosestPoint(&destP,dest); //selecting the closest valid point; ideal for end of delivery
+	struct Point destTemp = destP.points[destPclosest];
+	/*for (int t = 0; t < destP.numPoints; t++)
+	{
+
+	}*/
+	//while (!eqPt(current, dest) && close >= 0)
+	while (/*!eqPt(current, destTemp) &&*/ distance(&current, &dest)!=1.0 && close >= 0 && result.numPoints<625)
 	{
 		possible = getPossibleMoves(map, current, last);
-		close = getClosestPoint(&possible, dest);
+		//close = getClosestPoint(&possible, dest);
+		close = getClosestPoint(&possible, destTemp);
 		if (close >= 0)
 		{
 			last = current;

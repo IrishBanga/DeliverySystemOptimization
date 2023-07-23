@@ -22,12 +22,12 @@ int main(void)
 	seneca.current.B = (struct Truck){ 0, 0, getBlueRoute()/*, { 0, 0, {0, 0}, { 0, 0 } }*/ };
 	seneca.current.G = (struct Truck){ 0, 0, getGreenRoute()/*, { 0, 0, {0, 0}, { 0, 0 } }*/ };
 	seneca.current.Y = (struct Truck){ 0, 0, getYellowRoute()/*,{ 0, 0, {0, 0}, { 0, 0 } } */};
-
+	seneca.nextDayOrders = 0;
 	/*seneca.current.B.route = getBlueRoute();
 	seneca.current.G.route = getGreenRoute();
 	seneca.current.Y.route = getYellowRoute();*/
-
-	printMap(&routeMap, 0, 0); //currently, printMap has been modified to print rows with spaces before and after the identifying characters
+	seneca.nextDayOrders = 0;
+	printMap(&routeMap, 1, 1); //currently, printMap has been modified to print rows with spaces before and after the identifying characters
 	printf("=================\n"
 		   "Seneca Deliveries\n"
 		   "=================\n");
@@ -68,6 +68,8 @@ int main(void)
 				if (!error) /* WILL IMPLEMENT A SPECIAL ERROR CODE MESSAGE LATER */
 				{
 					printf("Initial validation successful\n");
+					struct OrderInfo order = { wt,vol,check,{-1,-1} };
+					run(&seneca, order);
 				}
 				else if (error == INVALID_WEIGHT) 
 				{

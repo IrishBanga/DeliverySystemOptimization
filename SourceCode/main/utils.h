@@ -4,6 +4,7 @@
 #define INVALID_WEIGHT 1
 #define INVALID_VOLUME 3
 #define INVALID_POINT 5
+#define MAX_ORDERS 432
 /*
 * Array sizes mentioned in document may be defined as macros in later milestones to be more informative.
 * On hold, as current milestone required desgining data structures only.
@@ -63,8 +64,8 @@ struct Dispatch
 	
 	
 	//ON HOLD //MS3 change - size changed from 20 to 432; //based on the rationale that users can enter as many orders until they decide to quit or until the max Limit of orders(432) is exceeded for the next day
-	struct OrderInfo ordersOtherDay[20];  //size currently kept at 20; May change later; Ideally the program will terminate after limits are exceeded.
-	
+	struct OrderInfo ordersOtherDay[MAX_ORDERS];  //size currently kept at 20; May change later; Ideally the program will terminate after limits are exceeded.
+	int nextDayOrders;
 	//The validOrdersToday[] array is entirely optional; may be dropped in later milestones
 	//struct OrderInfo validOrdersToday[432]; //array size 432; based on the scenario ((max volume allowed in trucks)*(number of trucks))/(least volume of package)=(36*3)/(0.25)
 };
@@ -131,3 +132,4 @@ void sortByLimitingFactor(double dists[][2], struct Dispatch* org);
 int findTruckAndDiversion(struct Dispatch* org, double dists[][2], struct OrderInfo* order);
 
 
+void run(struct Dispatch* org, struct OrderInfo order); //integration purposes only -  will be moved to main
