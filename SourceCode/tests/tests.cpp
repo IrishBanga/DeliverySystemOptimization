@@ -168,126 +168,126 @@ TEST_CLASS(WhiteboxTests){
 
 namespace getTrucksByReferencetests
 {
-	TEST_CLASS(BlackboxTests)
-	{
-		TEST_METHOD(BB_TestGetTruckByReference1)
-		{
-			struct Fleet current;
-			current.G.route.routeSymbol = 4;
-			current.B.route.routeSymbol = 2;
-			current.Y.route.routeSymbol = 8;
+	TEST_CLASS(BlackboxTests){
+			TEST_METHOD(BB_TestGetTruckByReference1){
+					struct Fleet current;
+	current.G.route.routeSymbol = 4;
+	current.B.route.routeSymbol = 2;
+	current.Y.route.routeSymbol = 8;
 
-			struct Fleet *fleetCopy = &current;
-			struct Truck *result = getTruckByReference(fleetCopy, 4);
+	struct Fleet *fleetCopy = &current;
+	struct Truck *result = getTruckByReference(fleetCopy, 4);
 
-			struct Truck *expected = &current.G;
-			Assert::AreEqual(&expected->route.routeSymbol, &result->route.routeSymbol);
-		}
+	struct Truck *expected = &current.G;
+	Assert::AreEqual(&expected->route.routeSymbol, &result->route.routeSymbol);
+}
 
-		TEST_METHOD(BB_TestGetTruckByReference2)
-		{
-			struct Fleet current;
-			current.G.route.routeSymbol = 4;
-			current.B.route.routeSymbol = 2;
-			current.Y.route.routeSymbol = 8;
+TEST_METHOD(BB_TestGetTruckByReference2)
+{
+	struct Fleet current;
+	current.G.route.routeSymbol = 4;
+	current.B.route.routeSymbol = 2;
+	current.Y.route.routeSymbol = 8;
 
-			struct Fleet *fleetCopy = &current;
-			struct Truck *result = getTruckByReference(fleetCopy, 2);
+	struct Fleet *fleetCopy = &current;
+	struct Truck *result = getTruckByReference(fleetCopy, 2);
 
-			struct Truck *expected = &current.B;
-			Assert::AreEqual(&expected->route.routeSymbol, &result->route.routeSymbol);
-		}
+	struct Truck *expected = &current.B;
+	Assert::AreEqual(&expected->route.routeSymbol, &result->route.routeSymbol);
+}
 
-		TEST_METHOD(BB_TestGetTruckByReference3)
-		{
-			struct Fleet current;
-			current.G.route.routeSymbol = 4;
-			current.B.route.routeSymbol = 2;
-			current.Y.route.routeSymbol = 8;
+TEST_METHOD(BB_TestGetTruckByReference3)
+{
+	struct Fleet current;
+	current.G.route.routeSymbol = 4;
+	current.B.route.routeSymbol = 2;
+	current.Y.route.routeSymbol = 8;
 
-			struct Fleet *fleetCopy = &current;
-			struct Truck *result = getTruckByReference(fleetCopy, 8);
+	struct Fleet *fleetCopy = &current;
+	struct Truck *result = getTruckByReference(fleetCopy, 8);
 
-			struct Truck *expected = &current.Y;
-			Assert::AreEqual(&expected->route.routeSymbol, &result->route.routeSymbol);
-		}
+	struct Truck *expected = &current.Y;
+	Assert::AreEqual(&expected->route.routeSymbol, &result->route.routeSymbol);
+}
 
-		TEST_METHOD(BB_TestGetTruckByReference4)
-		{
-			struct Fleet current;
-			current.G.route.routeSymbol = 4;
-			current.B.route.routeSymbol = 2;
-			current.Y.route.routeSymbol = 8;
+TEST_METHOD(BB_TestGetTruckByReference4)
+{
+	struct Fleet current;
+	current.G.route.routeSymbol = 4;
+	current.B.route.routeSymbol = 2;
+	current.Y.route.routeSymbol = 8;
 
-			struct Fleet *fleetCopy = &current;
-			struct Truck *result = getTruckByReference(fleetCopy, 0);
+	struct Fleet *fleetCopy = &current;
+	struct Truck *result = getTruckByReference(fleetCopy, 0);
 
-			Assert::IsNull(result);
-		}
+	Assert::IsNull(result);
+}
 
-		TEST_METHOD(BB_TestGetTruckByReference5)
-		{
-			struct Fleet current;
-			current.G.route.routeSymbol = -1;
-			current.B.route.routeSymbol = 0;
+TEST_METHOD(BB_TestGetTruckByReference5)
+{
+	struct Fleet current;
+	current.G.route.routeSymbol = -1;
+	current.B.route.routeSymbol = 0;
 
-			struct Fleet *fleetCopy = &current;
-			struct Truck *result = getTruckByReference(fleetCopy, -1);
+	struct Fleet *fleetCopy = &current;
+	struct Truck *result = getTruckByReference(fleetCopy, -1);
 
-			struct Truck *expected = &current.G;
-			Assert::AreEqual(&expected->route.routeSymbol, &result->route.routeSymbol);
-		}
+	struct Truck *expected = &current.G;
+	Assert::AreEqual(&expected->route.routeSymbol, &result->route.routeSymbol);
+}
 
-		TEST_METHOD(BB_TestGetTruckByReference6)
-		{
-			struct Fleet current;
-			current.G.route.routeSymbol = -1;
-			current.B.route.routeSymbol = 0;
-			current.Y.route.routeSymbol = 8;
+TEST_METHOD(BB_TestGetTruckByReference6)
+{
+	struct Fleet current;
+	current.G.route.routeSymbol = -1;
+	current.B.route.routeSymbol = 0;
+	current.Y.route.routeSymbol = 8;
 
-			struct Fleet *fleetCopy = &current;
-			struct Truck *result = getTruckByReference(fleetCopy, 0);
+	struct Fleet *fleetCopy = &current;
+	struct Truck *result = getTruckByReference(fleetCopy, 0);
 
-			struct Truck *expected = &current.B;
-			Assert::AreEqual(&expected->route.routeSymbol, &result->route.routeSymbol);
-		}
+	struct Truck *expected = &current.B;
+	Assert::AreEqual(&expected->route.routeSymbol, &result->route.routeSymbol);
+}
 
-		TEST_METHOD(BB_TestGetTruckByReference7)
-		struct Fleet current;
-		current.G.route = getGreenRoute();
-		current.G.route.routeSymbol = 8;
-		current.B.route = getBlueRoute();
-		current.B.route.routeSymbol = 8;
-		current.Y.route = getYellowRoute();
-		current.Y.route.routeSymbol = 8;
+TEST_METHOD(BB_TestGetTruckByReference7)
+{
+	struct Fleet current;
+	current.G.route = getGreenRoute();
+	current.G.route.routeSymbol = 8;
+	current.B.route = getBlueRoute();
+	current.B.route.routeSymbol = 8;
+	current.Y.route = getYellowRoute();
+	current.Y.route.routeSymbol = 8;
 
-		struct Fleet *fleetCopy = &current;
-		struct Truck *result = getTruckByReference(fleetCopy, 8);
+	struct Fleet *fleetCopy = &current;
+	struct Truck *result = getTruckByReference(fleetCopy, 8);
 
-		struct Truck *expected = &current.G;
-		Assert::AreEqual(&expected->route.routeSymbol, &result->route.routeSymbol);
-		Assert::AreEqual(&expected->route.points[15].row, &result->route.points[15].row);
-	}
+	struct Truck *expected = &current.G;
+	Assert::AreEqual(&expected->route.routeSymbol, &result->route.routeSymbol);
+	Assert::AreEqual(&expected->route.points[15].row, &result->route.points[15].row);
+}
 
-	TEST_METHOD(BB_TestGetTruckByReference8)
-	{
-		struct Fleet current; // define fleet struct that nests each truck
+TEST_METHOD(BB_TestGetTruckByReference8)
+{
+	struct Fleet current; // define fleet struct that nests each truck
 
-		current.G.route = getGreenRoute(); // ensure each truck has a routeSymbol
-		current.G.route.routeSymbol = 8;
-		current.B.route = getBlueRoute();
-		current.B.route.routeSymbol = 8;
-		current.Y.route = getYellowRoute();
-		current.Y.route.routeSymbol = 8;
+	current.G.route = getGreenRoute(); // ensure each truck has a routeSymbol
+	current.G.route.routeSymbol = 8;
+	current.B.route = getBlueRoute();
+	current.B.route.routeSymbol = 8;
+	current.Y.route = getYellowRoute();
+	current.Y.route.routeSymbol = 8;
 
-		struct Fleet *fleetCopy = &current;												// make fleet copy
-		struct Truck *result = getTruckByReference(fleetCopy, 8); // call function with routeSymbol param
+	struct Fleet *fleetCopy = &current;												// make fleet copy
+	struct Truck *result = getTruckByReference(fleetCopy, 8); // call function with routeSymbol param
 
-		struct Truck *expected = &current.B; // define expected result
-		Assert::AreNotEqual(&expected->route.routeSymbol, &result->route.routeSymbol);
-		Assert::AreNotEqual(&expected->route.points[15].row, &result->route.points[15].row);
-	}
-};
+	struct Truck *expected = &current.B; // define expected result
+	Assert::AreNotEqual(&expected->route.routeSymbol, &result->route.routeSymbol);
+	Assert::AreNotEqual(&expected->route.points[15].row, &result->route.points[15].row);
+}
+}
+;
 
 TEST_CLASS(WhiteboxTests)
 {
