@@ -1129,7 +1129,7 @@ namespace findTruckAndDiversiontests
 
 			for (int i = 0; i < 7; i++)
 			{
-				int res = eqPt(expectedDiversion.points[i], order.diversion.points[i]);
+				int res = eqPt(expectedDiversion.points[i], order.diversion.points[(7 - 1) - i]);
 				Assert::AreEqual(1, res);
 			}
 		}
@@ -1184,7 +1184,7 @@ namespace findTruckAndDiversiontests
 
 			for (int i = 0; i < 7; i++)
 			{
-				int res = eqPt(expectedDiversion.points[i], order.diversion.points[i]);
+				int res = eqPt(expectedDiversion.points[i], order.diversion.points[(7 - 1) - i]);
 				Assert::AreEqual(1, res);
 			}
 		}
@@ -1238,7 +1238,7 @@ namespace findTruckAndDiversiontests
 
 			for (int i = 0; i < 6; i++)
 			{
-				int res = eqPt(expectedDiversion.points[i], order.diversion.points[i]);
+				int res = eqPt(expectedDiversion.points[i], order.diversion.points[(6 - 1) - i]);
 				Assert::AreEqual(1, res);
 			}
 		}
@@ -1292,7 +1292,7 @@ namespace findTruckAndDiversiontests
 
 			for (int i = 0; i < 6; i++)
 			{
-				int res = eqPt(expectedDiversion.points[i], order.diversion.points[i]);
+				int res = eqPt(expectedDiversion.points[i], order.diversion.points[(6 - 1) - i]);
 				Assert::AreEqual(1, res);
 			}
 		}
@@ -1344,7 +1344,7 @@ namespace findTruckAndDiversiontests
 
 			for (int i = 0; i < 4; i++)
 			{
-				int res = eqPt(expectedDiversion.points[i], order.diversion.points[i]);
+				int res = eqPt(expectedDiversion.points[i], order.diversion.points[(4 - 1) - i]);
 				Assert::AreEqual(1, res);
 			}
 		}
@@ -1398,7 +1398,7 @@ namespace findTruckAndDiversiontests
 
 			for (int i = 0; i < 4; i++)
 			{
-				int res = eqPt(expectedDiversion.points[i], order.diversion.points[i]);
+				int res = eqPt(expectedDiversion.points[i], order.diversion.points[(4 - 1) - i]);
 				Assert::AreNotEqual(1, res);
 			}
 
