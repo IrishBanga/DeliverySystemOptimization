@@ -63,106 +63,142 @@ public:
 
 namespace getSpaceRemainingtests
 {
-	TEST_CLASS(BlackboxTests) {
-public:
-	TEST_METHOD(BB_TestGetSpaceRemaining1) // trying to test getSpaceRemaining() function
+	TEST_CLASS(BlackboxTests)
 	{
-		Truck truck;
-		truck.CurrentWeight = 500;
-		truck.CurrentVolume = 10;
-		double result = getSpaceRemaining(&truck);
-		double expected = 0.5;
-		Assert::AreEqual(expected, result);
+	public:
+		TEST_METHOD(BB_TestGetSpaceRemaining1) // trying to test getSpaceRemaining() function
+		{
+			Truck truck;
+			truck.CurrentWeight = 500;
+			truck.CurrentVolume = 10;
+			double result = getSpaceRemaining(&truck);
+			double expected = 0.5;
+			Assert::AreEqual(expected, result);
+		}
 
-	}
-	TEST_METHOD(BB_TestGetSpaceRemaining2)
+		TEST_METHOD(BB_TestGetSpaceRemaining2)
+		{
+			Truck truck;
+			truck.CurrentWeight = 800;
+			truck.CurrentVolume = 24;
+			double result = getSpaceRemaining(&truck);
+			double expected = 0.2;
+			Assert::AreEqual(expected, result);
+		}
+
+		TEST_METHOD(BB_TestGetSpaceRemaining3)
+		{
+			Truck truck;
+			truck.CurrentWeight = 1000;
+			truck.CurrentVolume = 24;
+			double result = getSpaceRemaining(&truck);
+			double expected = 0.0;
+			Assert::AreEqual(expected, result);
+		}
+
+		TEST_METHOD(BB_TestGetSpaceRemaining4)
+		{
+			Truck truck;
+			truck.CurrentWeight = 800;
+			truck.CurrentVolume = 36;
+			double result = getSpaceRemaining(&truck);
+			double expected = 0.0;
+			Assert::AreEqual(expected, result);
+		}
+
+		TEST_METHOD(BB_TestGetSpaceRemaining5)
+		{
+			Truck truck;
+			truck.CurrentWeight = 801;
+			truck.CurrentVolume = 25;
+			double result = getSpaceRemaining(&truck);
+			double expected = 0.199;
+			Assert::AreEqual(expected, result);
+		}
+
+		TEST_METHOD(BB_TestGetSpaceRemaining6)
+		{
+			Truck truck;
+			truck.CurrentWeight = 801;
+			truck.CurrentVolume = 24;
+			double result = getSpaceRemaining(&truck);
+			double expected = 0.199;
+			Assert::AreEqual(expected, result);
+		}
+
+		TEST_METHOD(BB_TestGetSpaceRemaining7)
+		{
+			Truck truck;
+			truck.CurrentWeight = 800;
+			truck.CurrentVolume = 25;
+			double result = getSpaceRemaining(&truck);
+			double expected = 0.2;
+			Assert::AreEqual(expected, result);
+		}
+
+		TEST_METHOD(BB_TestGetSpaceRemaining8)
+		{
+			Truck truck;
+			truck.CurrentWeight = 1000;
+			truck.CurrentVolume = 36;
+			double result = getSpaceRemaining(&truck);
+			double expected = 0.0;
+			Assert::AreEqual(expected, result);
+		}
+
+		TEST_METHOD(BB_TestGetSpaceRemaining9)
+		{
+			Truck truck;
+			truck.CurrentWeight = 1000;
+			truck.CurrentVolume = 24;
+			double result = getSpaceRemaining(&truck);
+			double expected = 0.0;
+			Assert::AreEqual(expected, result);
+		}
+	};
+
+	TEST_CLASS(WhiteboxTests)
 	{
-		Truck truck;
-		truck.CurrentWeight = 800;
-		truck.CurrentVolume = 24;
-		double result = getSpaceRemaining(&truck);
-		double expected = 0.2;
-		Assert::AreEqual(expected, result);
-	}
+	public:
+		TEST_METHOD(WB_TestGetSpaceRemaining1)
+		{
+			Truck truck;
+			truck.CurrentWeight = 500;
+			truck.CurrentVolume = 18;
+			double result = getSpaceRemaining(&truck);
+			double expected = 0.5;
+			Assert::AreEqual(expected, result);
+		}
 
-	TEST_METHOD(BB_TestGetSpaceRemaining3)
-	{
-		Truck truck;
-		truck.CurrentWeight = 1000;
-		truck.CurrentVolume = 24;
-		double result = getSpaceRemaining(&truck);
-		double expected = 0;
-		Assert::AreEqual(expected, result);
-	}
+		TEST_METHOD(WB_TestGetSpaceRemaining2)
+		{
+			Truck truck;
+			truck.CurrentWeight = 0;
+			truck.CurrentVolume = 0;
+			double result = getSpaceRemaining(&truck);
+			double expected = 1;
+			Assert::AreEqual(expected, result);
+		}
 
-	TEST_METHOD(BB_TestGetSpaceRemaining4)
-	{
-		Truck truck;
-		truck.CurrentWeight = 800;
-		truck.CurrentVolume = 36;
-		double result = getSpaceRemaining(&truck);
-		double expected = 0;
-		Assert::AreEqual(expected, result);
-	}
+		TEST_METHOD(WB_TestGetSpaceRemaining3)
+		{
+			Truck truck;
+			truck.CurrentWeight = 1;
+			truck.CurrentVolume = 0.25;
+			double result = getSpaceRemaining(&truck);
+			double expected = (36 - 0.25) / 36;
+			Assert::AreEqual(expected, result);
+		}
 
-	TEST_METHOD(BB_TestGetSpaceRemaining5)
-	{
-		Truck truck;
-		truck.CurrentWeight = 801;
-		truck.CurrentVolume = 25;
-		double result = getSpaceRemaining(&truck);
-		double expected = 0.199;
-		Assert::AreEqual(expected, result);
-	}
-
-	TEST_METHOD(BB_TestGetSpaceRemaining6)
-	{
-		Truck truck;
-		truck.CurrentWeight = 801;
-		truck.CurrentVolume = 24;
-		double result = getSpaceRemaining(&truck);
-		double expected = 0.199;
-		Assert::AreEqual(expected, result);
-	}
-
-	TEST_METHOD(BB_TestGetSpaceRemaining7)
-	{
-		Truck truck;
-		truck.CurrentWeight = 800;
-		truck.CurrentVolume = 25;
-		double result = getSpaceRemaining(&truck);
-		double expected = 0.2;
-		Assert::AreEqual(expected, result);
-	}
-
-	TEST_METHOD(BB_TestGetSpaceRemaining8)
-	{
-		Truck truck;
-		truck.CurrentWeight = 1000;
-		truck.CurrentVolume = 36;
-		double result = getSpaceRemaining(&truck);
-		double expected = 0.0;
-		Assert::AreEqual(expected, result);
-	}
-
-	TEST_METHOD(BB_TestGetSpaceRemaining9)
-	{
-		Truck truck;
-		truck.CurrentWeight = 1000;
-		truck.CurrentVolume = 24;
-		double result = getSpaceRemaining(&truck);
-		double expected = 0.0;
-		Assert::AreEqual(expected, result);
-	}
-	}
-	;
-
-	TEST_CLASS(WhiteboxTests) {
-public:
-	TEST_METHOD(TestgetSpace2) {
-
-	}
-
+		TEST_METHOD(WB_TestGetSpaceRemaining4)
+		{
+			Truck truck;
+			truck.CurrentWeight = 999;
+			truck.CurrentVolume = 35.75;
+			double result = getSpaceRemaining(&truck);
+			double expected = 0.001;
+			Assert::AreEqual(expected, result);
+		}
 	};
 }
 
@@ -760,223 +796,376 @@ public:
 
 namespace sortByLimitingFactorTests
 {
-	TEST_CLASS(BLACKBOXTESTS) {
-public:
-
-	TEST_METHOD(BB_sortByLimitingFactor1) // truck fully limited, but no equal dists
+	TEST_CLASS(BLACKBOXTESTS)
 	{
-		{double dists[3][2];
-		struct Dispatch org;
-
-		org.current.B.CurrentWeight = 0.0;
-		org.current.B.CurrentVolume = 0.0;
-		org.current.G.CurrentWeight = 625.0;
-		org.current.G.CurrentVolume = 35.0;
-		org.current.Y.CurrentWeight = 99.0;
-		org.current.Y.CurrentVolume = 12.0;
-
-		org.current.B.route = getBlueRoute();
-		org.current.G.route = getGreenRoute();
-		org.current.Y.route = getYellowRoute();
-
-		dists[0][0] = 12.4;
-		dists[0][1] = BLUE;
-		dists[1][0] = 10.6;
-		dists[1][1] = GREEN;
-		dists[2][0] = 13.5;
-		dists[2][1] = YELLOW;
-
-		int i, j;
-		double temp[1][2];
-
-		for (i = 3 - 1; i > 0; i--)
+	public:
+		TEST_METHOD(BB_sortByLimitingFactor1) // truck fully limited, but no equal dists
 		{
-			for (j = 0; j < i; j++)
+			double dists[3][2];
+			struct Dispatch org;
+
+			org.current.B.CurrentWeight = 0.0;
+			org.current.B.CurrentVolume = 0.0;
+			org.current.G.CurrentWeight = 625.0;
+			org.current.G.CurrentVolume = 35.0;
+			org.current.Y.CurrentWeight = 99.0;
+			org.current.Y.CurrentVolume = 12.0;
+
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+
+			dists[0][0] = 12.4;
+			dists[0][1] = BLUE;
+			dists[1][0] = 10.6;
+			dists[1][1] = GREEN;
+			dists[2][0] = 13.5;
+			dists[2][1] = YELLOW;
+
+			int i, j;
+			double temp[1][2];
+
+			for (i = 3 - 1; i > 0; i--)
 			{
-				if (dists[j][0] > dists[j + 1][0])
+				for (j = 0; j < i; j++)
 				{
-					temp[0][0] = dists[j][0];
-					temp[0][1] = dists[j][1];
-					dists[j][0] = dists[j + 1][0];
-					dists[j][1] = dists[j + 1][1];
-					dists[j + 1][0] = temp[0][0];
-					dists[j + 1][1] = temp[0][1];
+					if (dists[j][0] > dists[j + 1][0])
+					{
+						temp[0][0] = dists[j][0];
+						temp[0][1] = dists[j][1];
+						dists[j][0] = dists[j + 1][0];
+						dists[j][1] = dists[j + 1][1];
+						dists[j + 1][0] = temp[0][0];
+						dists[j + 1][1] = temp[0][1];
+					}
 				}
+			}
+
+			sortByLimitingFactor(dists, &org);
+
+			double expectedDists[3][2] = {
+				{10.6, GREEN},
+				{12.4, BLUE},
+				{13.5, YELLOW}
+			};
+
+			for (i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
 			}
 		}
 
-		sortByLimitingFactor(dists, &org);
-
-		double expectedDists[3][2] = {
-				{10.6, GREEN},
-				{12.4, BLUE},
-				{13.5, YELLOW} };
-
-		for (int i = 0; i < 3; i++)
+		TEST_METHOD(BB_sortByLimitingFactor2) // same limits, but different dists
 		{
-			Assert::AreEqual(expectedDists[i][0], dists[i][0]);
-			Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
-		}
-		}
-	}
+			double dists[3][2];
+			struct Dispatch org;
 
-	TEST_METHOD(BB_sortByLimitingFactor2) // same limits, but different dists
-	{
-		double dists[3][2];
-		struct Dispatch org;
+			org.current.B.CurrentWeight = 200.0;
+			org.current.B.CurrentVolume = 10.0;
+			org.current.G.CurrentWeight = 200.0;
+			org.current.G.CurrentVolume = 10.0;
+			org.current.Y.CurrentWeight = 200.0;
+			org.current.Y.CurrentVolume = 10.0;
 
-		org.current.B.CurrentWeight = 200.0;
-		org.current.B.CurrentVolume = 10.0;
-		org.current.G.CurrentWeight = 200.0;
-		org.current.G.CurrentVolume = 10.0;
-		org.current.Y.CurrentWeight = 200.0;
-		org.current.Y.CurrentVolume = 10.0;
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
 
-		org.current.B.route = getBlueRoute();
-		org.current.G.route = getGreenRoute();
-		org.current.Y.route = getYellowRoute();
+			dists[0][0] = 5.5;
+			dists[0][1] = BLUE;
+			dists[1][0] = 10.2;
+			dists[1][1] = GREEN;
+			dists[2][0] = 15.9;
+			dists[2][1] = YELLOW;
 
-		dists[0][0] = 5.5;
-		dists[0][1] = BLUE;
-		dists[1][0] = 10.2;
-		dists[1][1] = GREEN;
-		dists[2][0] = 15.9;
-		dists[2][1] = YELLOW;
+			sortByLimitingFactor(dists, &org);
 
-		sortByLimitingFactor(dists, &org);
-
-		double expectedDists[3][2] = {
+			double expectedDists[3][2] = {
 				{5.5, BLUE},
 				{10.2, GREEN},
-				{15.9, YELLOW} };
+				{15.9, YELLOW}
+			};
 
-		for (int i = 0; i < 3; i++)
-		{
-			Assert::AreEqual(expectedDists[i][0], dists[i][0]);
-			Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			}
 		}
-	}
 
-	TEST_METHOD(BB_sortByLimitingFactor3) // different limitations and same distance
-	{
-		double dists[3][2];
-		struct Dispatch org;
+		TEST_METHOD(BB_sortByLimitingFactor3) // different limitations and same distance
+		{
+			double dists[3][2];
+			struct Dispatch org;
 
-		org.current.B.CurrentWeight = 500.0;
-		org.current.B.CurrentVolume = 10.0;
-		org.current.G.CurrentWeight = 625.0;
-		org.current.G.CurrentVolume = 10.0;
-		org.current.Y.CurrentWeight = 800.0;
-		org.current.Y.CurrentVolume = 12.0;
+			org.current.B.CurrentWeight = 500.0;
+			org.current.B.CurrentVolume = 10.0;
+			org.current.G.CurrentWeight = 625.0;
+			org.current.G.CurrentVolume = 10.0;
+			org.current.Y.CurrentWeight = 800.0;
+			org.current.Y.CurrentVolume = 12.0;
 
-		org.current.B.route = getBlueRoute();
-		org.current.G.route = getGreenRoute();
-		org.current.Y.route = getYellowRoute();
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
 
-		dists[0][0] = 10.0;
-		dists[0][1] = BLUE;
-		dists[1][0] = 10.0;
-		dists[1][1] = GREEN;
-		dists[2][0] = 12.0;
-		dists[2][1] = YELLOW;
+			dists[0][0] = 10.0;
+			dists[0][1] = BLUE;
+			dists[1][0] = 10.0;
+			dists[1][1] = GREEN;
+			dists[2][0] = 12.0;
+			dists[2][1] = YELLOW;
 
-		sortByLimitingFactor(dists, &org);
+			sortByLimitingFactor(dists, &org);
 
-		double expectedDists[3][2] = {
+			double expectedDists[3][2] = {
 				{10.0, BLUE},
 				{10.0, GREEN},
-				{12.0, YELLOW} };
+				{12.0, YELLOW}
+			};
 
-		for (int i = 0; i < 3; i++)
-		{
-			Assert::AreEqual(expectedDists[i][0], dists[i][0]);
-			Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			}
 		}
-	}
 
-	TEST_METHOD(BB_sortByLimitingFactor4) // different volume limitation and same distance
-	{
-		double dists[3][2];
-		struct Dispatch org;
+		TEST_METHOD(BB_sortByLimitingFactor4) // different volume limitation and same distance
+		{
+			double dists[3][2];
+			struct Dispatch org;
 
-		org.current.B.CurrentWeight = 400.0;
-		org.current.B.CurrentVolume = 15.0;
-		org.current.G.CurrentWeight = 625.0;
-		org.current.G.CurrentVolume = 23.0;
-		org.current.Y.CurrentWeight = 625.0;
-		org.current.Y.CurrentVolume = 12.0;
+			org.current.B.CurrentWeight = 400.0;
+			org.current.B.CurrentVolume = 15.0;
+			org.current.G.CurrentWeight = 625.0;
+			org.current.G.CurrentVolume = 23.0;
+			org.current.Y.CurrentWeight = 625.0;
+			org.current.Y.CurrentVolume = 12.0;
 
-		org.current.B.route = getBlueRoute();
-		org.current.G.route = getGreenRoute();
-		org.current.Y.route = getYellowRoute();
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
 
-		dists[0][0] = 5.0;
-		dists[0][1] = BLUE;
-		dists[1][0] = 10.0;
-		dists[1][1] = GREEN;
-		dists[2][0] = 10.0;
-		dists[2][1] = YELLOW;
+			dists[0][0] = 5.0;
+			dists[0][1] = BLUE;
+			dists[1][0] = 10.0;
+			dists[1][1] = GREEN;
+			dists[2][0] = 10.0;
+			dists[2][1] = YELLOW;
 
-		sortByLimitingFactor(dists, &org);
+			sortByLimitingFactor(dists, &org);
 
-		double expectedDists[3][2] = {
+			double expectedDists[3][2] = {
 				{5.0, BLUE},
 				{10.0, YELLOW},
-				{10.0, GREEN} };
+				{10.0, GREEN}
+			};
 
-		for (int i = 0; i < 3; i++)
-		{
-			Assert::AreEqual(expectedDists[i][0], dists[i][0]);
-			Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			}
 		}
-	}
 
-	TEST_METHOD(BB_sortByLimitingFactor5) // empty trucks remain the same order
-	{
-		double dists[3][2];
-		struct Dispatch org;
+		TEST_METHOD(BB_sortByLimitingFactor5) // empty trucks remain the same order
+		{
+			double dists[3][2];
+			struct Dispatch org;
 
-		org.current.B.CurrentWeight = 1000.0;
-		org.current.B.CurrentVolume = 36.0;
-		org.current.G.CurrentWeight = 1000.0;
-		org.current.G.CurrentVolume = 36.0;
-		org.current.Y.CurrentWeight = 1000.0;
-		org.current.Y.CurrentVolume = 36.0;
+			org.current.B.CurrentWeight = 1000.0;
+			org.current.B.CurrentVolume = 36.0;
+			org.current.G.CurrentWeight = 1000.0;
+			org.current.G.CurrentVolume = 36.0;
+			org.current.Y.CurrentWeight = 1000.0;
+			org.current.Y.CurrentVolume = 36.0;
 
-		org.current.B.route = getBlueRoute();
-		org.current.G.route = getGreenRoute();
-		org.current.Y.route = getYellowRoute();
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
 
-		dists[0][0] = 3.14;
-		dists[0][1] = BLUE;
-		dists[1][0] = 3.14;
-		dists[1][1] = GREEN;
-		dists[2][0] = 3.14;
-		dists[2][1] = YELLOW;
+			dists[0][0] = 3.14;
+			dists[0][1] = BLUE;
+			dists[1][0] = 3.14;
+			dists[1][1] = GREEN;
+			dists[2][0] = 3.14;
+			dists[2][1] = YELLOW;
 
-		sortByLimitingFactor(dists, &org);
+			sortByLimitingFactor(dists, &org);
 
-		double expectedDists[3][2] = {
+			double expectedDists[3][2] = {
 				{3.14, BLUE},
 				{3.14, GREEN},
-				{3.14, YELLOW} };
+				{3.14, YELLOW}
+			};
 
-		for (int i = 0; i < 3; i++)
-		{
-			Assert::AreEqual(expectedDists[i][0], dists[i][0]);
-			Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			}
 		}
-	}
-	}
-	;
+	};
 
-	TEST_CLASS(WhiteboxTests) {
-public:
-	TEST_METHOD(WB_SortByLimitingFactor1) {
+	TEST_CLASS(WhiteboxTests)
+	{
+	public:
+		TEST_METHOD(WB_SortByLimitingFactor1)
+		{
+			double dists[3][2];
+			struct Dispatch org;
 
-	}
+			org.current.B.CurrentWeight = 0.0;
+			org.current.B.CurrentVolume = 0.0;
+			org.current.G.CurrentWeight = 0.0;
+			org.current.G.CurrentVolume = 0.0;
+			org.current.Y.CurrentWeight = 0.0;
+			org.current.Y.CurrentVolume = 0.0;
+
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+
+			dists[0][0] = 0.0;
+			dists[0][1] = BLUE;
+			dists[1][0] = 0.0;
+			dists[1][1] = GREEN;
+			dists[2][0] = 0.0;
+			dists[2][1] = YELLOW;
+
+			sortByLimitingFactor(dists, &org);
+
+			double expectedDists[3][2] = {
+				{0.0, BLUE},
+				{0.0, GREEN},
+				{0.0, YELLOW}
+			};
+
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			}
+		}
+
+		TEST_METHOD(WB_SortByLimitingFactor2)
+		{
+			double dists[3][2];
+			struct Dispatch org;
+
+			org.current.B.CurrentWeight = 500.0;
+			org.current.B.CurrentVolume = 10.0;
+			org.current.G.CurrentWeight = 625.0;
+			org.current.G.CurrentVolume = 10.0;
+			org.current.Y.CurrentWeight = 800.0;
+			org.current.Y.CurrentVolume = 12.0;
+
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+
+			dists[0][0] = 25;
+			dists[0][1] = BLUE;
+			dists[1][0] = 25;
+			dists[1][1] = GREEN;
+			dists[2][0] = 25;
+			dists[2][1] = YELLOW;
+
+			sortByLimitingFactor(dists, &org);
+
+			double expectedDists[3][2] = {
+				{25, BLUE},
+				{25, GREEN},
+				{25, YELLOW}
+			};
+
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			}
+		}
+
+		TEST_METHOD(WB_SortByLimitingFactor3)
+		{
+			double dists[3][2];
+			struct Dispatch org;
+
+			org.current.B.CurrentWeight = 500.0;
+			org.current.B.CurrentVolume = 10.0;
+			org.current.G.CurrentWeight = 625.0;
+			org.current.G.CurrentVolume = 10.0;
+			org.current.Y.CurrentWeight = 800.0;
+			org.current.Y.CurrentVolume = 12.0;
+
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+
+			dists[0][0] = 35.35;
+			dists[0][1] = BLUE;
+			dists[1][0] = 35.35;
+			dists[1][1] = GREEN;
+			dists[2][0] = 35.35;
+			dists[2][1] = YELLOW;
+
+			sortByLimitingFactor(dists, &org);
+
+			double expectedDists[3][2] = {
+				{35.35, BLUE},
+				{35.35, GREEN},
+				{35.35, YELLOW}
+			};
+
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			}
+		}
+
+		TEST_METHOD(WB_SortByLimitingFactor4)
+		{
+			double dists[3][2];
+			struct Dispatch org;
+
+			org.current.B.CurrentWeight = 0.0;
+			org.current.B.CurrentVolume = 0.0;
+			org.current.G.CurrentWeight = 0.0;
+			org.current.G.CurrentVolume = 0.0;
+			org.current.Y.CurrentWeight = 800.0;
+			org.current.Y.CurrentVolume = 12.0;
+
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+
+			dists[0][0] = 35.35;
+			dists[0][1] = BLUE;
+			dists[1][0] = 35.35;
+			dists[1][1] = GREEN;
+			dists[2][0] = 35.35;
+			dists[2][1] = YELLOW;
+
+			sortByLimitingFactor(dists, &org);
+
+			double expectedDists[3][2] = {
+				{35.35, BLUE},
+				{35.35, GREEN},
+				{35.35, YELLOW}
+			};
+
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			}
+		}
 	};
 }
+
 
 namespace findTruckAndDiversiontests
 {
@@ -1484,5 +1673,189 @@ public:
 		Assert::AreEqual(MAX_ORDERS, done);
 	}
 
+	TEST_METHOD(WB_findTruckAndDiversion_3) //demonstrating and testing example from project document
+	{
+		double dists[3][2];
+		struct Dispatch org;
+		org.map = populateMap();
+
+		org.current.B.CurrentWeight = 200;
+		org.current.B.CurrentVolume = 0.5;
+		org.current.G.CurrentWeight = 799;
+		org.current.G.CurrentVolume = 1;
+		org.current.Y.CurrentWeight = 0;
+		org.current.Y.CurrentVolume = 0;
+
+		org.current.B.route = getBlueRoute();
+		org.current.G.route = getGreenRoute();
+		org.current.Y.route = getYellowRoute();
+
+		dists[1][0] = 10.0;
+		dists[1][1] = BLUE;
+		dists[0][0] = 2.0;
+		dists[0][1] = GREEN;
+		dists[2][0] = 12.0;
+		dists[2][1] = YELLOW;
+
+		struct OrderInfo order = { 500, 1, {7, 24}, {-1, -1} };
+		struct OrderInfo* orderTemp = &order;
+		int done = findTruckAndDiversion(&org, dists, orderTemp);
+
+		Assert::AreEqual(1, done);
+		Assert::AreEqual(700, org.current.B.CurrentWeight);
+		Assert::AreEqual(1.5, org.current.B.CurrentVolume);
+		Assert::AreEqual(15, orderTemp->diversion.numPoints);
+		Assert::AreEqual((char)DIVERSION, orderTemp->diversion.routeSymbol);
+
+		Route expectedDiversion =
+		{
+			{
+				{17, 21},  // 18V
+				{16, 21},  // 17V
+		        {15, 21},  // 16V
+				{14, 21},  // 15V
+				{13, 21},  // 14V
+				{12, 21},  // 13V
+				{11, 21},  // 12V
+				{10, 21},  // 11V
+				{9, 21},   // 10V
+				{8, 21},   // 9V
+				{7, 21},   // 8V
+				{6, 22},   // 7W
+				{6, 23},   // 7X
+				{6, 24},   // 7Y
+				{7, 24}    // 8Y
+			},
+			15,
+			DIVERSION };
+
+		for (int i = 0; i < 15; i++)
+		{
+			int res = eqPt(expectedDiversion.points[i], order.diversion.points[(15 - 1) - i]);
+			Assert::AreEqual(1, res);
+		}
+	}
+
+	TEST_METHOD(WB_findTruckAndDiversion_4) //calculating diversion for yellow route
+	{
+		double dists[3][2];
+		struct Dispatch org;
+		org.map = populateMap();
+
+		org.current.B.CurrentWeight = 0;
+		org.current.B.CurrentVolume = 0;
+		org.current.G.CurrentWeight = 0;
+		org.current.G.CurrentVolume = 0;
+		org.current.Y.CurrentWeight = 0;
+		org.current.Y.CurrentVolume = 0;
+
+		org.current.B.route = getBlueRoute();
+		org.current.G.route = getGreenRoute();
+		org.current.Y.route = getYellowRoute();
+
+		dists[1][0] = 6.0;
+		dists[1][1] = BLUE;
+		dists[2][0] = 14.0;
+		dists[2][1] = GREEN;
+		dists[0][0] = 4.0;
+		dists[0][1] = YELLOW;
+
+		struct OrderInfo order = { 500, 1, {23, 24}, {-1, -1} };
+		struct OrderInfo* orderTemp = &order;
+		int done = findTruckAndDiversion(&org, dists, orderTemp);
+
+		Assert::AreEqual(1, done);
+		Assert::AreEqual(500, org.current.Y.CurrentWeight);
+		Assert::AreEqual(1.0, org.current.Y.CurrentVolume);
+		Assert::AreEqual(10, orderTemp->diversion.numPoints);
+		Assert::AreEqual((char)DIVERSION, orderTemp->diversion.routeSymbol);
+
+		Route expectedDiversion =
+		{
+			{
+				{19, 20},  // 20U
+				{20, 20},  // 21U
+				{21, 20},  // 22U
+				{22, 20},  // 23U
+				{23, 20},  // 24U
+				{24, 21},  // 25V
+				{24, 22},  // 25W
+				{24, 23},  // 25X
+				{24, 24},  // 25Y
+				{23, 24}   // 24Y
+			},
+			10,
+			DIVERSION };
+
+		for (int i = 0; i < 10; i++)
+		{
+			int res = eqPt(expectedDiversion.points[i], order.diversion.points[(10 - 1) - i]);
+			Assert::AreEqual(1, res);
+		}
+	}
+
+	TEST_METHOD(WB_findTruckAndDiversion_5) //calculating diversion other trucks with the edge location, similar to earlier test case
+	{
+		double dists[3][2];
+		struct Dispatch org;
+		org.map = populateMap();
+
+		org.current.B.CurrentWeight = 0;
+		org.current.B.CurrentVolume = 0;
+		org.current.G.CurrentWeight = 0;
+		org.current.G.CurrentVolume = 0;
+		org.current.Y.CurrentWeight = 700;
+		org.current.Y.CurrentVolume = 15;
+
+		org.current.B.route = getBlueRoute();
+		org.current.G.route = getGreenRoute();
+		org.current.Y.route = getYellowRoute();
+
+		dists[1][0] = 6.0;
+		dists[1][1] = BLUE;
+		dists[2][0] = 14.0;
+		dists[2][1] = GREEN;
+		dists[0][0] = 4.0;
+		dists[0][1] = YELLOW;
+
+		struct OrderInfo order = { 500, 1, {23, 24}, {-1, -1} };
+		struct OrderInfo* orderTemp = &order;
+		int done = findTruckAndDiversion(&org, dists, orderTemp);
+
+		Assert::AreEqual(1, done);
+		Assert::AreEqual(500, org.current.B.CurrentWeight);
+		Assert::AreEqual(1.0, org.current.B.CurrentVolume);
+		Assert::AreEqual(16, orderTemp->diversion.numPoints);
+		Assert::AreEqual((char)DIVERSION, orderTemp->diversion.routeSymbol);
+
+		Route expectedDiversion =
+		{
+			{
+				{17, 12},  // 18M
+				{18, 12},  // 19M
+				{19, 13},  // 20N
+				{20, 14},  // 21O
+				{21, 15},  // 22P
+				{22, 15},  // 23P
+				{23, 16},  // 24Q
+				{23, 17},  // 24R
+				{23, 18},  // 24S
+				{23, 19},  // 24T
+				{23, 20},  // 24U
+				{24, 21},  // 25V
+				{24, 22},  // 25W
+				{24, 23},  // 25X
+				{24, 24},  // 25Y
+				{23, 24}   // 24Y
+			},
+			16,
+			DIVERSION };
+
+		for (int i = 0; i < 16; i++)
+		{
+			int res = eqPt(expectedDiversion.points[i], order.diversion.points[(16 - 1) - i]);
+			Assert::AreEqual(1, res);
+		}
+	}
 	};
 }
