@@ -1484,5 +1484,189 @@ public:
 		Assert::AreEqual(MAX_ORDERS, done);
 	}
 
+	TEST_METHOD(WB_findTruckAndDiversion_3) //demonstrating and testing example from project document
+	{
+		double dists[3][2];
+		struct Dispatch org;
+		org.map = populateMap();
+
+		org.current.B.CurrentWeight = 200;
+		org.current.B.CurrentVolume = 0.5;
+		org.current.G.CurrentWeight = 799;
+		org.current.G.CurrentVolume = 1;
+		org.current.Y.CurrentWeight = 0;
+		org.current.Y.CurrentVolume = 0;
+
+		org.current.B.route = getBlueRoute();
+		org.current.G.route = getGreenRoute();
+		org.current.Y.route = getYellowRoute();
+
+		dists[1][0] = 10.0;
+		dists[1][1] = BLUE;
+		dists[0][0] = 2.0;
+		dists[0][1] = GREEN;
+		dists[2][0] = 12.0;
+		dists[2][1] = YELLOW;
+
+		struct OrderInfo order = { 500, 1, {7, 24}, {-1, -1} };
+		struct OrderInfo* orderTemp = &order;
+		int done = findTruckAndDiversion(&org, dists, orderTemp);
+
+		Assert::AreEqual(1, done);
+		Assert::AreEqual(700, org.current.B.CurrentWeight);
+		Assert::AreEqual(1.5, org.current.B.CurrentVolume);
+		Assert::AreEqual(15, orderTemp->diversion.numPoints);
+		Assert::AreEqual((char)DIVERSION, orderTemp->diversion.routeSymbol);
+
+		Route expectedDiversion =
+		{
+			{
+				{17, 21},  // 18V
+				{16, 21},  // 17V
+		        {15, 21},  // 16V
+				{14, 21},  // 15V
+				{13, 21},  // 14V
+				{12, 21},  // 13V
+				{11, 21},  // 12V
+				{10, 21},  // 11V
+				{9, 21},   // 10V
+				{8, 21},   // 9V
+				{7, 21},   // 8V
+				{6, 22},   // 7W
+				{6, 23},   // 7X
+				{6, 24},   // 7Y
+				{7, 24}    // 8Y
+			},
+			15,
+			DIVERSION };
+
+		for (int i = 0; i < 15; i++)
+		{
+			int res = eqPt(expectedDiversion.points[i], order.diversion.points[(15 - 1) - i]);
+			Assert::AreEqual(1, res);
+		}
+	}
+
+	TEST_METHOD(WB_findTruckAndDiversion_4) //calculating diversion for yellow route
+	{
+		double dists[3][2];
+		struct Dispatch org;
+		org.map = populateMap();
+
+		org.current.B.CurrentWeight = 0;
+		org.current.B.CurrentVolume = 0;
+		org.current.G.CurrentWeight = 0;
+		org.current.G.CurrentVolume = 0;
+		org.current.Y.CurrentWeight = 0;
+		org.current.Y.CurrentVolume = 0;
+
+		org.current.B.route = getBlueRoute();
+		org.current.G.route = getGreenRoute();
+		org.current.Y.route = getYellowRoute();
+
+		dists[1][0] = 6.0;
+		dists[1][1] = BLUE;
+		dists[2][0] = 14.0;
+		dists[2][1] = GREEN;
+		dists[0][0] = 4.0;
+		dists[0][1] = YELLOW;
+
+		struct OrderInfo order = { 500, 1, {23, 24}, {-1, -1} };
+		struct OrderInfo* orderTemp = &order;
+		int done = findTruckAndDiversion(&org, dists, orderTemp);
+
+		Assert::AreEqual(1, done);
+		Assert::AreEqual(500, org.current.Y.CurrentWeight);
+		Assert::AreEqual(1.0, org.current.Y.CurrentVolume);
+		Assert::AreEqual(10, orderTemp->diversion.numPoints);
+		Assert::AreEqual((char)DIVERSION, orderTemp->diversion.routeSymbol);
+
+		Route expectedDiversion =
+		{
+			{
+				{19, 20},  // 20U
+				{20, 20},  // 21U
+				{21, 20},  // 22U
+				{22, 20},  // 23U
+				{23, 20},  // 24U
+				{24, 21},  // 25V
+				{24, 22},  // 25W
+				{24, 23},  // 25X
+				{24, 24},  // 25Y
+				{23, 24}   // 24Y
+			},
+			10,
+			DIVERSION };
+
+		for (int i = 0; i < 10; i++)
+		{
+			int res = eqPt(expectedDiversion.points[i], order.diversion.points[(10 - 1) - i]);
+			Assert::AreEqual(1, res);
+		}
+	}
+
+	TEST_METHOD(WB_findTruckAndDiversion_5) //calculating diversion other trucks with the edge location, similar to earlier test case
+	{
+		double dists[3][2];
+		struct Dispatch org;
+		org.map = populateMap();
+
+		org.current.B.CurrentWeight = 0;
+		org.current.B.CurrentVolume = 0;
+		org.current.G.CurrentWeight = 0;
+		org.current.G.CurrentVolume = 0;
+		org.current.Y.CurrentWeight = 700;
+		org.current.Y.CurrentVolume = 15;
+
+		org.current.B.route = getBlueRoute();
+		org.current.G.route = getGreenRoute();
+		org.current.Y.route = getYellowRoute();
+
+		dists[1][0] = 6.0;
+		dists[1][1] = BLUE;
+		dists[2][0] = 14.0;
+		dists[2][1] = GREEN;
+		dists[0][0] = 4.0;
+		dists[0][1] = YELLOW;
+
+		struct OrderInfo order = { 500, 1, {23, 24}, {-1, -1} };
+		struct OrderInfo* orderTemp = &order;
+		int done = findTruckAndDiversion(&org, dists, orderTemp);
+
+		Assert::AreEqual(1, done);
+		Assert::AreEqual(500, org.current.B.CurrentWeight);
+		Assert::AreEqual(1.0, org.current.B.CurrentVolume);
+		Assert::AreEqual(16, orderTemp->diversion.numPoints);
+		Assert::AreEqual((char)DIVERSION, orderTemp->diversion.routeSymbol);
+
+		Route expectedDiversion =
+		{
+			{
+				{17, 12},  // 18M
+				{18, 12},  // 19M
+				{19, 13},  // 20N
+				{20, 14},  // 21O
+				{21, 15},  // 22P
+				{22, 15},  // 23P
+				{23, 16},  // 24Q
+				{23, 17},  // 24R
+				{23, 18},  // 24S
+				{23, 19},  // 24T
+				{23, 20},  // 24U
+				{24, 21},  // 25V
+				{24, 22},  // 25W
+				{24, 23},  // 25X
+				{24, 24},  // 25Y
+				{23, 24}   // 24Y
+			},
+			16,
+			DIVERSION };
+
+		for (int i = 0; i < 16; i++)
+		{
+			int res = eqPt(expectedDiversion.points[i], order.diversion.points[(16 - 1) - i]);
+			Assert::AreEqual(1, res);
+		}
+	}
 	};
 }

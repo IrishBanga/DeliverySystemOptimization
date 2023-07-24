@@ -4,13 +4,9 @@
 #define INVALID_WEIGHT 1
 #define INVALID_VOLUME 3
 #define INVALID_POINT 5
-#define MAX_ORDERS 432
+#define MAX_ORDERS 432 //based on the scenario ((max volume allowed in trucks)*(number of trucks))/(least volume of package)=(36*3)/(0.25)
 #define QUIT_CONDITION 79
 #define ADDED_NEXT_DAY 59
-/*
-* Array sizes mentioned in document may be defined as macros in later milestones to be more informative.
-* On hold, as current milestone required desgining data structures only.
-*/
 
 /*
 * struct OrderInfo- used to store info about a single order
@@ -19,14 +15,8 @@ struct OrderInfo
 {
 	int weight; //stores the weight of an order in kg(s) must be less than 1000 kg
 	double volume; //stores the size/volume in m^3 will either be 0.25, 0.5 or 1 m^3
-	//char destIndex1; //holds the numeric index of the destination, will be between 1 and 25; has data type char to account for quit condition value 'x' 
-	//char destIndex2; //holds the alphabetic index of the destination, will be between A and Y   
-
-	//MS3 change - desination storage changed to struct Point destination instead of char destIndex1 and char destIndex1;
 	struct Point destination; //chnaged from previous scheme as destination is already converted to integer points(similar to a graph)
-	
 	struct Route diversion; //identifies the diversion that is associated with an order; will be determined by the algorithm to be developed in later milestones
-	//int truckID; //might be needed to identify what truck the order will ship on
 };
 
 /*
@@ -35,12 +25,8 @@ struct OrderInfo
 struct Truck
 {
 	int CurrentWeight; //must be less than 1000 kg
-	double CurrentVolume; //must be less than 36 m^3    //chnaged from int to double  
+	double CurrentVolume; //must be less than 36 m^3
 	struct Route route; //stores the entire  route of the truck; will be fetched using getRoute() functions;
-
-
-	//MS3 change - storing orders for the truck has been omitted in face of memory concern(s)
-	//struct OrderInfo orders[144]; //holds the order in the truck; array size is based on the volume constraints(i.e., max 36 m^3) and min volume of package(i.e., 0.25 m^3)
 };
 
 /*
@@ -61,18 +47,10 @@ struct Dispatch
 {
 	struct Map map; //stores the map with the buildings and route info - will be populated using already provided functions
 	struct Fleet current;  //concerned with Fleet state of current day - can be all empty OR may fetch the pending orders from previous day from ordersOtherDay array
-	
-	//The OrderInfo array specified below may be dropped in later milestones as information about process of storing orders for next day is unclear from project instructions 	
-	
-	
-	//ON HOLD //MS3 change - size changed from 20 to 432; //based on the rationale that users can enter as many orders until they decide to quit or until the max Limit of orders(432) is exceeded for the next day
-	struct OrderInfo ordersOtherDay[MAX_ORDERS];  //size currently kept at 20; May change later; Ideally the program will terminate after limits are exceeded.
+	struct OrderInfo ordersOtherDay[MAX_ORDERS];  //Ideally the program will terminate after limits are exceeded.
+	//based on the rationale that users can enter as many orders until they decide to quit or until the max Limit of orders(432) is exceeded for the next day
 	int nextDayOrders;
-	//The validOrdersToday[] array is entirely optional; may be dropped in later milestones
-	//struct OrderInfo validOrdersToday[432]; //array size 432; based on the scenario ((max volume allowed in trucks)*(number of trucks))/(least volume of package)=(36*3)/(0.25)
 };
-
-
 
 /*FUNCTIONS*/
 
@@ -84,7 +62,6 @@ struct Dispatch
 * @returns - an integer value that determines validation success and also provides an error code based on what parameter was invalid; SEE MACROS DEFINED ABOVE 
 */
 int validate(int weight, double volume, struct Point valid);
-
 
 /***
 * Calculates the limiting factor for a truck by comparing percentages of current weight and current volume. //secondary factor after distances
@@ -129,9 +106,8 @@ void sortByLimitingFactor(double dists[][2], struct Dispatch* org);
 * @param org - a pointer to a struct Dispatch representing the dispatch organization
 * @param dists - a 2D array representing the distances and truck color codes; assumed to be sorted taking distances and limiting factors into consideration
 * @param order - a pointer to a struct OrderInfo representing the order to be assigned
-* @returns - an integer value indicating the success of assigning the order: 1 if assigned, 0 if not assigned
+* @returns - an integer value indicating the success of assigning the order: 1 if assigned, 0 if not assigned, ADDED_NEXT_DAY if order added to next day array
 */
 int findTruckAndDiversion(struct Dispatch* org, double dists[][2], struct OrderInfo* order);
 
-
-void run(struct Dispatch* org, struct OrderInfo order); //integration purposes only -  logic will be moved to main
+void run(struct Dispatch* org, struct OrderInfo order); //integration purposes only -  logic moved to main

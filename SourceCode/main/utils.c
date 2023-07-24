@@ -109,7 +109,7 @@ int validate(int weight, double volume, struct Point temp)
 		}
 	}
 
-	void run(struct Dispatch* org, struct OrderInfo order)
+	void run(struct Dispatch* org, struct OrderInfo order) //for testing purposes only
 	{
 		double dists[3][2];
 		getTruckDistances2(dists, &org->current, order.destination);
