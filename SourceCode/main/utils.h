@@ -5,6 +5,7 @@
 #define INVALID_VOLUME 3
 #define INVALID_POINT 5
 #define MAX_ORDERS 432
+#define QUIT_CONDITION 79
 /*
 * Array sizes mentioned in document may be defined as macros in later milestones to be more informative.
 * On hold, as current milestone required desgining data structures only.
@@ -132,4 +133,4 @@ void sortByLimitingFactor(double dists[][2], struct Dispatch* org);
 int findTruckAndDiversion(struct Dispatch* org, double dists[][2], struct OrderInfo* order);
 
 
-void run(struct Dispatch* org, struct OrderInfo order); //integration purposes only -  will be moved to main
+void run(struct Dispatch* org, struct OrderInfo order); //integration purposes only -  logic will be moved to main

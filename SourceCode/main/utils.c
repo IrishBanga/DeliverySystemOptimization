@@ -168,27 +168,27 @@ int validate(int weight, double volume, struct Point temp)
 					{
 						if (shortest.numPoints == 0)
 						{
-							shortest = shortestPath(&org->map, truck->route.points[i], order->destination);
+							shortest = shortestPath(&org->map,order->destination , truck->route.points[i]);
 						}
 						else
 						{
 							struct Route shortestTemp = { {0,0},0,DIVERSION };
-							shortestTemp = shortestPath(&org->map, truck->route.points[i], order->destination);
+							shortestTemp = shortestPath(&org->map, order->destination,truck->route.points[i] );
 							if (shortestTemp.numPoints!=0 // && //shortestTemp.numPoints <= shortest.numPoints //not applicable since diagonals still travel more
-								&& //might be redundant or can cause logical error
+								//&& //might be redundant or can cause logical error
 								//(distance(&shortestTemp.points[0], &shortestTemp.points[shortestTemp.numPoints - 1]) <= (distance(&shortest.points[0], &shortest.points[shortest.numPoints - 1])))
-								(distance(&shortestTemp.points[0], &truck->route.points[i]) <= (distance(&shortest.points[0], &truck->route.points[i - 1])))
+								//(distance(&shortestTemp.points[0], &truck->route.points[i]) <= (distance(&shortest.points[0], &truck->route.points[i - 1])))
 								)
 							{
-								double dist1 = 0.0, dist2 = 0.0;
-								for (int i = 1; i < shortest.numPoints; i++) {
-									dist1 += distance(&shortest.points[i - 1], &shortest.points[i]);
+								double dist1 = 0.0, dist2 = 0.0; 
+								for (int i = 1; i < shortest.numPoints; i++) 
+								{
+									dist1 += distance(&shortest.points[i - 1], &shortest.points[i]); //calculating the total ditance travelled on a path
 								}
 								for (int i = 1; i < shortestTemp.numPoints; i++) {
 									dist2 += distance(&shortestTemp.points[i - 1], &shortestTemp.points[i]);
 								}
-								//for(int t=o;t<shortest)
-								if (dist2 <= dist1)
+								if (dist2 < dist1)
 								{
 									shortest = shortestTemp;
 									shortestPoint = i;
@@ -199,20 +199,30 @@ int validate(int weight, double volume, struct Point temp)
 					truck->CurrentVolume += order->volume;
 					truck->CurrentWeight += order->weight;
 					done = 1;
-					addPtToRoute(&order->diversion, truck->route.points[shortestPoint]);
-					for (int i = 0; i < shortest.numPoints; i++)
+					//addPtToRoute(&order->diversion, truck->route.points[shortestPoint]);
+					for (int i = 0; i < shortest.numPoints; i++) //copying the shortest route to the OrderInfo struct
 					{
 						addPtToRoute(&order->diversion, shortest.points[i]);
 					}
-					addPtToRoute(&order->diversion, order->destination);
+					//addPtToRoute(&order->diversion, order->destination);
 					order->diversion.routeSymbol = DIVERSION;
 
 					printf("DIVERSION CALCULATED\n");
 					printf("Ship on %s LINE,", truckNames[i]);
-					for (int p = 0; p < order->diversion.numPoints; p++) //printing diversion route
+
+
+					/* OTHER CHANGES in DEVELOPMENT PROCESS ;NOT INCLUDED IN FINAL SOLUTION FOR - MS4 */
+					//for (int p = 0; p < order->diversion.numPoints; p++) //printing diversion route
+					//{
+					//		int row= (int)(order->diversion.points[p].row)+1;
+					//		printf(" %d%c%c", row, 'A' + order->diversion.points[p].col, (p != order->diversion.numPoints - 1)? ',' : '\n');
+					//}
+					
+					
+					for (int p =  order->diversion.numPoints-1; p >=0; p--) //printing diversion route
 					{
-							int row= (int)(order->diversion.points[p].row)+1;
-							printf(" %d%c%c", row, 'A' + order->diversion.points[p].col, (p != order->diversion.numPoints - 1)? ',' : '\n');
+						int row = (int)(order->diversion.points[p].row) + 1;
+						printf(" %d%c%c", row, 'A' + order->diversion.points[p].col, (p != 0) ? ',' : '\n');
 					}
 				}
 				else
@@ -224,8 +234,18 @@ int validate(int weight, double volume, struct Point temp)
 			if (i == 2 && !done)
 			{
 				printf("FLEET LIMIT EXCEEDED\n");
-				org->ordersOtherDay[org->nextDayOrders++] = *order;
+				if (org->nextDayOrders < MAX_ORDERS) 
+				{
+					printf("ADDING ORDER INFO TO NEXT DAY\n");
+				    org->ordersOtherDay[org->nextDayOrders++] = *order;
+				}
+				else
+				{
+					printf("REACHED THE LIMIT FOR NEXT DAY ORDERS.ORDER UNSUCCESSFUL!\nABORTING PROGRAM!\n");
+					done = MAX_ORDERS;
+				}
 			}
+			
 		}
 		return done;
 	}

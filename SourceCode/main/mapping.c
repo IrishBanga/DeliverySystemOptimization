@@ -229,31 +229,57 @@ struct Route shortestPath(const struct Map* map, const struct Point start, const
 	struct Route possible = { {0,0},0,0 };
 	int close = 0;
 
-
-
+	addPtToRoute(&result, start); //adding the start point to result route; aids in findTruckAndDiversion() logic
 	struct Route destP = { {0,0},0,0 };
 	struct Point invalidP = { -1,-1 };
-	destP = getPossibleMoves(map, dest, invalidP); //getting all valid points adjacent to destination
-	int destPclosest = getClosestPoint(&destP,dest); //selecting the closest valid point; ideal for end of delivery
-	struct Point destTemp = destP.points[destPclosest];
-	/*for (int t = 0; t < destP.numPoints; t++)
-	{
 
-	}*/
-	//while (!eqPt(current, dest) && close >= 0)
+	/* OTHER CHANGES in DEVELOPMENT PROCESS ;NOT INCLUDED IN FINAL SOLUTION FOR - MS4 */
+	//destP = getPossibleMoves(map, dest, invalidP); //getting all valid points adjacent to destination
+	//int destPclosest = getClosestPoint(&destP,dest); //selecting the closest valid point; ideal for end of delivery
+	//struct Point destTemp = destP.points[destPclosest];
+	///*for (int t = 0; t < destP.numPoints; t++)
+	//{
+
+	//}*/
+	////while (!eqPt(current, dest) && close >= 0)
+
+
 	while (/*!eqPt(current, destTemp) &&*/ distance(&current, &dest)!=1.0 && close >= 0 && result.numPoints<625)
 	{
 		possible = getPossibleMoves(map, current, last);
-		//close = getClosestPoint(&possible, dest);
-		close = getClosestPoint(&possible, destTemp);
+		close = getClosestPoint(&possible, dest);
+		
+		/* OTHER CHANGES in DEVELOPMENT PROCESS ;NOT INCLUDED IN FINAL SOLUTION FOR - MS4 */
+		//close = getClosestPoint(&possible, destTemp);
+		
 		if (close >= 0)
 		{
-			last = current;
-			current = possible.points[close];
-			addPtToRoute(&result, current);
+			if (result.numPoints == 1) //prohibiting diagonal move (starting) from the destination location
+			{
+				last = current;
+				int done = 0;
+				int t=0;
+				int targetIndex = 0;
+				for ( t = 0; t < possible.numPoints&&!done; t++)
+				{
+					if (distance(&possible.points[t], &current) == 1)
+					{
+						done = 1;
+						targetIndex = t;
+					}
+				}
+				current = possible.points[targetIndex];
+				addPtToRoute(&result, current);
+			}
+			else
+			{
+				last = current;
+				current = possible.points[close];
+				addPtToRoute(&result, current);
+			}
 		}
 	}
-
+	addPtToRoute(&result, dest); //adding the destination point to result route; aids in findTruckAndDiversion() logic
 	return result;
 }
 

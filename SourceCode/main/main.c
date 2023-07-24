@@ -18,12 +18,21 @@ int main(void)
 
 	struct Dispatch seneca;
 	seneca.map = routeMap;
-	seneca.current.B = (struct Truck){ 0, 0, getBlueRoute()};
+	/*seneca.current.B = (struct Truck){ 0, 0, getBlueRoute()};
 	seneca.current.G = (struct Truck){ 0, 0, getGreenRoute()};
-	seneca.current.Y = (struct Truck){ 0, 0, getYellowRoute()};
+	seneca.current.Y = (struct Truck){ 0, 0, getYellowRoute()};*/ //corrected initialisation. This caused errors
+	seneca.current.B.CurrentWeight = 0;
+	seneca.current.B.CurrentVolume = 0;
+	seneca.current.G.CurrentWeight = 0;
+	seneca.current.G.CurrentVolume = 0;
+	seneca.current.Y.CurrentWeight = 0;
+	seneca.current.Y.CurrentVolume = 0;
+	seneca.current.B.route = getBlueRoute();
+	seneca.current.G.route = getGreenRoute();
+	seneca.current.Y.route = getYellowRoute();
 	seneca.nextDayOrders = 0;
 	
-	printMap(&routeMap, 1, 1); //currently, printMap has been modified to print rows with spaces before and after the identifying characters
+	printMap(&routeMap, 0, 1); //currently, printMap has been modified to print rows with spaces before and after the identifying characters
 	printf("=================\n"
 		   "Seneca Deliveries\n"
 		   "=================\n");
@@ -40,7 +49,7 @@ int main(void)
 		while (getchar() != '\n');
 		if (wt == 0 && vol == 0 && temp[0] == 'x')
 		{
-			done = 1;
+			done = QUIT_CONDITION;
 		}
 		else
 		{
@@ -65,7 +74,14 @@ int main(void)
 				{
 					printf("Initial validation successful\n");
 					struct OrderInfo order = { wt,vol,check,{-1,-1} };
-					run(&seneca, order);
+					//run(&seneca, order); //used for testing purposes
+
+					double dists[3][2];
+					getTruckDistances2(dists, &seneca.current, order.destination);
+					sortByLimitingFactor(dists,&seneca);
+					struct OrderInfo* orderTemp = &order;
+					done = findTruckAndDiversion(&seneca, dists, orderTemp);
+					printf("No of points on diversion route %d\n", orderTemp->diversion.numPoints);
 				}
 				else if (error == INVALID_WEIGHT) 
 				{
@@ -82,7 +98,7 @@ int main(void)
 			}		
 		}
 	
-	} while (!done);
+	} while (done != QUIT_CONDITION && done != MAX_ORDERS);
 	printf("Thanks for shipping with Seneca!");
 	
 
