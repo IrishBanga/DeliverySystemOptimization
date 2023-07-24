@@ -6,6 +6,7 @@
 #define INVALID_POINT 5
 #define MAX_ORDERS 432
 #define QUIT_CONDITION 79
+#define ADDED_NEXT_DAY 59
 /*
 * Array sizes mentioned in document may be defined as macros in later milestones to be more informative.
 * On hold, as current milestone required desgining data structures only.

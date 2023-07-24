@@ -238,6 +238,7 @@ int validate(int weight, double volume, struct Point temp)
 				{
 					printf("ADDING ORDER INFO TO NEXT DAY\n");
 				    org->ordersOtherDay[org->nextDayOrders++] = *order;
+					done = ADDED_NEXT_DAY;
 				}
 				else
 				{

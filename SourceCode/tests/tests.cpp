@@ -1379,7 +1379,7 @@ namespace findTruckAndDiversiontests
 			struct OrderInfo* orderTemp = &order;
 			int done = findTruckAndDiversion(&org, dists, orderTemp);
 
-			Assert::AreEqual(0, done);
+			Assert::AreEqual(ADDED_NEXT_DAY, done);
 			Assert::AreEqual(666, org.current.Y.CurrentWeight);
 			Assert::AreEqual(.25, org.current.Y.CurrentVolume);
 			Assert::AreNotEqual(4, orderTemp->diversion.numPoints);
@@ -1413,8 +1413,76 @@ namespace findTruckAndDiversiontests
 
 	TEST_CLASS(WhiteboxTests) {
 public:
-	TEST_METHOD(WB_findTruckAndDiversion_1) {
 
+	TEST_METHOD(WB_findTruckAndDiversion_1) // Testing the outcome in case the fleet limit is exceeded but not the order limit(of 432) for next day .
+	{
+		double dists[3][2];
+		struct Dispatch org;
+		org.map = populateMap();
+
+		org.current.B.CurrentWeight = 1000;
+		org.current.B.CurrentVolume = 1.5;
+		org.current.G.CurrentWeight = 1000;
+		org.current.G.CurrentVolume = 1;
+		org.current.Y.CurrentWeight = 1000;
+		org.current.Y.CurrentVolume = .25;
+
+		org.current.B.route = getBlueRoute();
+		org.current.G.route = getGreenRoute();
+		org.current.Y.route = getYellowRoute();
+
+		dists[1][0] = 5.0;
+		dists[1][1] = BLUE;
+		dists[2][0] = 13.0;
+		dists[2][1] = GREEN;
+		dists[0][0] = 3.0;
+		dists[0][1] = YELLOW;
+
+		org.nextDayOrders = MAX_ORDERS-1;
+
+		struct OrderInfo order = { 666, .25, {22, 22}, {-1, -1} };
+		struct OrderInfo* orderTemp = &order;
+		int done = findTruckAndDiversion(&org, dists, orderTemp);
+
+		Assert::AreEqual(ADDED_NEXT_DAY, done);
+		// The order information should  be stored in the ordersOtherDay[] array
+		Assert::AreEqual(org.ordersOtherDay[org.nextDayOrders-1].volume, orderTemp->volume);
+		Assert::AreEqual(org.ordersOtherDay[org.nextDayOrders-1].weight, orderTemp->weight);
+		int res = eqPt(org.ordersOtherDay[org.nextDayOrders-1].destination, orderTemp->destination);
+		Assert::AreEqual(1, res);
 	}
+	TEST_METHOD(WB_findTruckAndDiversion_2) // Testing the outcome in case the fleet limit as well as the order limit(of 432) for next day is exceeded.
+	{
+		double dists[3][2];
+		struct Dispatch org;
+		org.map = populateMap();
+
+		org.current.B.CurrentWeight = 1000;
+		org.current.B.CurrentVolume = 1.5;
+		org.current.G.CurrentWeight = 1000;
+		org.current.G.CurrentVolume = 1;
+		org.current.Y.CurrentWeight = 1000;
+		org.current.Y.CurrentVolume = .25;
+
+		org.current.B.route = getBlueRoute();
+		org.current.G.route = getGreenRoute();
+		org.current.Y.route = getYellowRoute();
+
+		dists[1][0] = 5.0;
+		dists[1][1] = BLUE;
+		dists[2][0] = 13.0;
+		dists[2][1] = GREEN;
+		dists[0][0] = 3.0;
+		dists[0][1] = YELLOW;
+
+		org.nextDayOrders = MAX_ORDERS;
+
+		struct OrderInfo order = { 666, .25, {22, 22}, {-1, -1} };
+		struct OrderInfo* orderTemp = &order;
+		int done = findTruckAndDiversion(&org, dists, orderTemp);
+
+		Assert::AreEqual(MAX_ORDERS, done);
+	}
+
 	};
 }
