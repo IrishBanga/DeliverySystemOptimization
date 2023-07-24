@@ -612,6 +612,148 @@ public:
 		Assert::AreEqual(4, (int)(sortedArr[1][1])); // green
 		Assert::AreEqual(8, (int)(sortedArr[2][1])); // yellow
 	}
+
+	TEST_METHOD(WB_getTruckDistances2_4) {
+		double sortedArr[3][2];
+
+		struct Fleet current;
+		current.B.route = getBlueRoute();
+		current.G.route = getGreenRoute();
+		current.Y.route = getYellowRoute();
+
+		struct Point destination = { 11, 24 };
+		getTruckDistances2(sortedArr, &current, destination);
+
+		int BCP = getClosestPoint(&current.B.route, destination);
+		int GCP = getClosestPoint(&current.G.route, destination);
+		int YCP = getClosestPoint(&current.Y.route, destination);
+
+		double B_dist = distance(&current.B.route.points[BCP], &destination); 
+		double G_dist = distance(&current.G.route.points[GCP], &destination); 
+		double Y_dist = distance(&current.Y.route.points[YCP], &destination); 
+
+		Assert::AreEqual(G_dist, sortedArr[0][0]);
+		Assert::AreEqual(B_dist, sortedArr[1][0]);
+		Assert::AreEqual(Y_dist, sortedArr[2][0]);
+
+		Assert::AreEqual(GREEN, (int)(sortedArr[0][1])); // green
+		Assert::AreEqual(BLUE, (int)(sortedArr[1][1])); // blue
+		Assert::AreEqual(YELLOW, (int)(sortedArr[2][1])); // yellow
+	}
+
+	TEST_METHOD(WB_getTruckDistances2_5) {
+		double sortedArr[3][2];
+
+		struct Fleet current;
+		current.B.route = getBlueRoute();
+		current.G.route = getGreenRoute();
+		current.Y.route = getYellowRoute();
+
+		struct Point destination = { 22, 21 };
+		getTruckDistances2(sortedArr, &current, destination);
+
+		int BCP = getClosestPoint(&current.B.route, destination);
+		int GCP = getClosestPoint(&current.G.route, destination);
+		int YCP = getClosestPoint(&current.Y.route, destination);
+
+		double B_dist = distance(&current.B.route.points[BCP], &destination); // second nearest (17, 10)
+		double G_dist = distance(&current.G.route.points[GCP], &destination); // farthest
+		double Y_dist = distance(&current.Y.route.points[YCP], &destination); // nearest (19, 1)
+
+		Assert::AreEqual(Y_dist, sortedArr[0][0]);
+		Assert::AreEqual(B_dist, sortedArr[1][0]);
+		Assert::AreEqual(G_dist, sortedArr[2][0]);
+
+		// check colours
+		Assert::AreEqual(YELLOW, (int)(sortedArr[0][1])); // yellow code 8
+		Assert::AreEqual(BLUE, (int)(sortedArr[1][1])); // blue code 2
+		Assert::AreEqual(GREEN, (int)(sortedArr[2][1])); // green code 4
+	}
+
+	TEST_METHOD(WB_getTruckDistances2_6) {
+		double sortedArr[3][2];
+
+		struct Fleet current;
+		current.B.route = getBlueRoute();
+		current.G.route = getGreenRoute();
+		current.Y.route = getYellowRoute();
+
+		struct Point destination = { 14, 11 };
+		getTruckDistances2(sortedArr, &current, destination);
+
+		int BCP = getClosestPoint(&current.B.route, destination);
+		int GCP = getClosestPoint(&current.G.route, destination);
+		int YCP = getClosestPoint(&current.Y.route, destination);
+
+		double B_dist = distance(&current.B.route.points[BCP], &destination); // second nearest (17, 10)
+		double G_dist = distance(&current.G.route.points[GCP], &destination); // farthest
+		double Y_dist = distance(&current.Y.route.points[YCP], &destination); // nearest (19, 1)
+
+		Assert::AreEqual(B_dist, sortedArr[0][0]);
+		Assert::AreEqual(Y_dist, sortedArr[1][0]);
+		Assert::AreEqual(G_dist, sortedArr[2][0]);
+
+		// check colours
+		Assert::AreEqual(BLUE, (int)(sortedArr[0][1])); // blue code 2
+		Assert::AreEqual(YELLOW, (int)(sortedArr[1][1])); // yellow code 8
+		Assert::AreEqual(GREEN, (int)(sortedArr[2][1])); // green code 4
+	}
+	TEST_METHOD(WB_getTruckDistances2_7) {
+		double sortedArr[3][2];
+
+		struct Fleet current;
+		current.B.route = getBlueRoute();
+		current.G.route = getGreenRoute();
+		current.Y.route = getYellowRoute();
+
+		struct Point destination = { 15, 6 };
+		getTruckDistances2(sortedArr, &current, destination);
+
+		int BCP = getClosestPoint(&current.B.route, destination);
+		int GCP = getClosestPoint(&current.G.route, destination);
+		int YCP = getClosestPoint(&current.Y.route, destination);
+
+		double B_dist = distance(&current.B.route.points[BCP], &destination);
+		double G_dist = distance(&current.G.route.points[GCP], &destination);
+		double Y_dist = distance(&current.Y.route.points[YCP], &destination);
+
+		Assert::AreEqual(B_dist, sortedArr[0][0]);
+		Assert::AreEqual(Y_dist, sortedArr[1][0]);
+		Assert::AreEqual(G_dist, sortedArr[2][0]);
+
+		// check colours
+		Assert::AreEqual(BLUE, (int)(sortedArr[0][1])); // blue code 2
+		Assert::AreEqual(YELLOW, (int)(sortedArr[1][1])); // yellow code 8
+		Assert::AreEqual(GREEN, (int)(sortedArr[2][1])); // green code 4
+	}
+	TEST_METHOD(WB_getTruckDistances2_8) {
+		double sortedArr[3][2];
+
+		struct Fleet current;
+		current.B.route = getBlueRoute();
+		current.G.route = getGreenRoute();
+		current.Y.route = getYellowRoute();
+
+		struct Point destination = { 1, 2 };
+		getTruckDistances2(sortedArr, &current, destination);
+
+		int BCP = getClosestPoint(&current.B.route, destination);
+		int GCP = getClosestPoint(&current.G.route, destination);
+		int YCP = getClosestPoint(&current.Y.route, destination);
+
+		double B_dist = distance(&current.B.route.points[BCP], &destination); 
+		double G_dist = distance(&current.G.route.points[GCP], &destination); 
+		double Y_dist = distance(&current.Y.route.points[YCP], &destination); 
+
+		Assert::AreEqual(B_dist, sortedArr[0][0]);
+		Assert::AreEqual(G_dist, sortedArr[1][0]);
+		Assert::AreEqual(Y_dist, sortedArr[2][0]);
+
+		// check colours
+		Assert::AreEqual(BLUE, (int)(sortedArr[0][1])); // blue code 2
+		Assert::AreEqual(GREEN, (int)(sortedArr[1][1])); // green code 4
+		Assert::AreEqual(YELLOW, (int)(sortedArr[2][1])); // yellow code 8
+	}
 	}
 	;
 }
