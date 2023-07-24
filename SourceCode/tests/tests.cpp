@@ -162,8 +162,41 @@ namespace getSpaceRemainingtests
 	public:
 		TEST_METHOD(WB_TestGetSpaceRemaining1)
 		{
-			double result = getSpaceRemaining(NULL);
-			double expected = 0.0;
+			Truck truck;
+			truck.CurrentWeight = 500;
+			truck.CurrentVolume = 18;
+			double result = getSpaceRemaining(&truck);
+			double expected = 0.5;
+			Assert::AreEqual(expected, result);
+		}
+
+		TEST_METHOD(WB_TestGetSpaceRemaining2)
+		{
+			Truck truck;
+			truck.CurrentWeight = 0;
+			truck.CurrentVolume = 0;
+			double result = getSpaceRemaining(&truck);
+			double expected = 1;
+			Assert::AreEqual(expected, result);
+		}
+
+		TEST_METHOD(WB_TestGetSpaceRemaining3)
+		{
+			Truck truck;
+			truck.CurrentWeight = 1;
+			truck.CurrentVolume = 0.25;
+			double result = getSpaceRemaining(&truck);
+			double expected = (36 - 0.25) / 36;
+			Assert::AreEqual(expected, result);
+		}
+
+		TEST_METHOD(WB_TestGetSpaceRemaining4)
+		{
+			Truck truck;
+			truck.CurrentWeight = 999;
+			truck.CurrentVolume = 35.75;
+			double result = getSpaceRemaining(&truck);
+			double expected = 0.001;
 			Assert::AreEqual(expected, result);
 		}
 	};
@@ -981,22 +1014,33 @@ namespace sortByLimitingFactorTests
 	public:
 		TEST_METHOD(WB_SortByLimitingFactor1)
 		{
-			double dists[3][2] = {
-				{3.14, BLUE},
-				{3.14, GREEN},
-				{3.14, YELLOW}
-			};
+			double dists[3][2];
+			struct Dispatch org;
 
-			// Create a nullptr dispatch (set org to nullptr)
-			struct Dispatch* org = nullptr;
+			org.current.B.CurrentWeight = 0.0;
+			org.current.B.CurrentVolume = 0.0;
+			org.current.G.CurrentWeight = 0.0;
+			org.current.G.CurrentVolume = 0.0;
+			org.current.Y.CurrentWeight = 0.0;
+			org.current.Y.CurrentVolume = 0.0;
 
-			sortByLimitingFactor(dists, org);
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
 
-			// Verify that the dists array remains unchanged
+			dists[0][0] = 0.0;
+			dists[0][1] = BLUE;
+			dists[1][0] = 0.0;
+			dists[1][1] = GREEN;
+			dists[2][0] = 0.0;
+			dists[2][1] = YELLOW;
+
+			sortByLimitingFactor(dists, &org);
+
 			double expectedDists[3][2] = {
-				{3.14, BLUE},
-				{3.14, GREEN},
-				{3.14, YELLOW}
+				{0.0, BLUE},
+				{0.0, GREEN},
+				{0.0, YELLOW}
 			};
 
 			for (int i = 0; i < 3; i++)
@@ -1008,34 +1052,109 @@ namespace sortByLimitingFactorTests
 
 		TEST_METHOD(WB_SortByLimitingFactor2)
 		{
-			// Define a large value for distance
-			const double LARGE_DISTANCE = 1e9;
-
-			double dists[3][2] = {
-				{LARGE_DISTANCE, BLUE},
-				{LARGE_DISTANCE, GREEN},
-				{LARGE_DISTANCE, YELLOW}
-			};
-
+			double dists[3][2];
 			struct Dispatch org;
+
 			org.current.B.CurrentWeight = 500.0;
-			org.current.B.CurrentVolume = 20.0;
-			org.current.G.CurrentWeight = 800.0;
-			org.current.G.CurrentVolume = 24.0;
-			org.current.Y.CurrentWeight = 1000.0;
-			org.current.Y.CurrentVolume = 36.0;
+			org.current.B.CurrentVolume = 10.0;
+			org.current.G.CurrentWeight = 625.0;
+			org.current.G.CurrentVolume = 10.0;
+			org.current.Y.CurrentWeight = 800.0;
+			org.current.Y.CurrentVolume = 12.0;
 
 			org.current.B.route = getBlueRoute();
 			org.current.G.route = getGreenRoute();
 			org.current.Y.route = getYellowRoute();
 
+			dists[0][0] = 25;
+			dists[0][1] = BLUE;
+			dists[1][0] = 25;
+			dists[1][1] = GREEN;
+			dists[2][0] = 25;
+			dists[2][1] = YELLOW;
+
 			sortByLimitingFactor(dists, &org);
 
-			// Verify that the dists array is sorted based on limiting factors
 			double expectedDists[3][2] = {
-				{LARGE_DISTANCE, YELLOW},
-				{LARGE_DISTANCE, GREEN},
-				{LARGE_DISTANCE, BLUE}
+				{25, BLUE},
+				{25, GREEN},
+				{25, YELLOW}
+			};
+
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			}
+		}
+
+		TEST_METHOD(WB_SortByLimitingFactor3)
+		{
+			double dists[3][2];
+			struct Dispatch org;
+
+			org.current.B.CurrentWeight = 500.0;
+			org.current.B.CurrentVolume = 10.0;
+			org.current.G.CurrentWeight = 625.0;
+			org.current.G.CurrentVolume = 10.0;
+			org.current.Y.CurrentWeight = 800.0;
+			org.current.Y.CurrentVolume = 12.0;
+
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+
+			dists[0][0] = 35.35;
+			dists[0][1] = BLUE;
+			dists[1][0] = 35.35;
+			dists[1][1] = GREEN;
+			dists[2][0] = 35.35;
+			dists[2][1] = YELLOW;
+
+			sortByLimitingFactor(dists, &org);
+
+			double expectedDists[3][2] = {
+				{35.35, BLUE},
+				{35.35, GREEN},
+				{35.35, YELLOW}
+			};
+
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			}
+		}
+
+		TEST_METHOD(WB_SortByLimitingFactor4)
+		{
+			double dists[3][2];
+			struct Dispatch org;
+
+			org.current.B.CurrentWeight = 0.0;
+			org.current.B.CurrentVolume = 0.0;
+			org.current.G.CurrentWeight = 0.0;
+			org.current.G.CurrentVolume = 0.0;
+			org.current.Y.CurrentWeight = 800.0;
+			org.current.Y.CurrentVolume = 12.0;
+
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+
+			dists[0][0] = 35.35;
+			dists[0][1] = BLUE;
+			dists[1][0] = 35.35;
+			dists[1][1] = GREEN;
+			dists[2][0] = 35.35;
+			dists[2][1] = YELLOW;
+
+			sortByLimitingFactor(dists, &org);
+
+			double expectedDists[3][2] = {
+				{35.35, BLUE},
+				{35.35, GREEN},
+				{35.35, YELLOW}
 			};
 
 			for (int i = 0; i < 3; i++)
