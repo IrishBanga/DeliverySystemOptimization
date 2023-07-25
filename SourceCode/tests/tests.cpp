@@ -57,8 +57,32 @@ public:
 		int invalid = validate(1500, 1.5, p1);
 		Assert::AreNotEqual(0, invalid); // error code returned may differ based on the way function sets them;hence confirming that it is not a success (i.e, 0 is not returned)
 	}
-	}
-	;
+	};
+
+	TEST_CLASS(WhiteboxTests)
+	{
+		TEST_METHOD(WB_TestValidate_1)
+		{
+			Point p1 = { 3, -1 };
+			int invalid = validate(500, .5, p1);
+			Assert::AreEqual(INVALID_POINT, invalid);
+
+		}
+		TEST_METHOD(WB_TestValidate_2)
+		{
+
+			Point p1 = { 3, 2 };
+			int invalid = validate(0, .5, p1);
+			Assert::AreEqual(INVALID_WEIGHT, invalid);
+		}
+		TEST_METHOD(WB_TestValidate_3)
+		{
+
+			Point p1 = { 3, 2 };
+			int valid = validate(500, .5, p1);
+			Assert::AreEqual(0, valid);
+		}
+	};
 }
 
 namespace getSpaceRemainingtests

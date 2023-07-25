@@ -244,7 +244,7 @@ struct Route shortestPath(const struct Map* map, const struct Point start, const
 	////while (!eqPt(current, dest) && close >= 0)
 
 	struct Point p1 = { 0,0 };
-	struct Point p2 = { 1,1 };
+	struct Point p2 = { 1,1 };  //further checks to ensure diagonal near destination isn't discarded
 	while (!eqPt(current, dest) && distance(&current, &dest)!=1.0 && distance(&current, &dest) != distance(&p1,&p2) && close >= 0 && result.numPoints<625)
 	{
 		possible = getPossibleMoves(map, current, last);
