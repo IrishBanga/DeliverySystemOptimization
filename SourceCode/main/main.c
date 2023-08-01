@@ -32,7 +32,7 @@ int main(void)
 	seneca.current.Y.route = getYellowRoute();
 	seneca.nextDayOrders = 0;
 	
-	printMap(&routeMap, 0, 1); //currently, printMap has been modified to print rows with spaces before and after the identifying characters
+	printMap(&routeMap, 1, 1); //currently, printMap has been modified to print rows with spaces before and after the identifying characters
 	printf("=================\n"
 		   "Seneca Deliveries\n"
 		   "=================\n");

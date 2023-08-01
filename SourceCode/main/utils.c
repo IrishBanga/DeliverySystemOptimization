@@ -6,6 +6,8 @@
 int validate(int weight, double volume, struct Point temp)
 {
 	int res = 0;
+	struct Map Base = populateMap();
+	struct Point invalid = { -1,-1 };
 	if (weight < 1 || weight > 1000)
 	{
 		res = INVALID_WEIGHT;
@@ -14,7 +16,7 @@ int validate(int weight, double volume, struct Point temp)
 	{
 		res = INVALID_VOLUME;
 	}
-	else if (temp.col < 0 || temp.col >= MAP_COLS || temp.row < 0 || temp.row >= MAP_ROWS)
+	else if (temp.col < 0 || temp.col >= MAP_COLS || temp.row < 0 || temp.row >= MAP_ROWS || Base.squares[temp.row][temp.col]!=1 || getPossibleMoves(&Base,temp,invalid).numPoints<1)
 	{
 		res = INVALID_POINT;
 	}

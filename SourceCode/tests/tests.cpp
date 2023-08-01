@@ -18,7 +18,7 @@ public:
 
 	TEST_METHOD(BB_TestValidate1) // test validate() function with a valid input
 	{
-		Point p1 = { 3, 2 };
+		Point p1 = { 2, 2 };
 		int valid = validate(500, .5, p1);
 		Assert::AreEqual(0, valid);
 	}
@@ -78,7 +78,7 @@ public:
 		TEST_METHOD(WB_TestValidate_3)
 		{
 
-			Point p1 = { 3, 2 };
+			Point p1 = { 2, 2 };
 			int valid = validate(500, .5, p1);
 			Assert::AreEqual(0, valid);
 		}
