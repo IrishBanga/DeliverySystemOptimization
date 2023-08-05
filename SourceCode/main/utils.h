@@ -111,3 +111,12 @@ void sortByLimitingFactor(double dists[][2], struct Dispatch* org);
 int findTruckAndDiversion(struct Dispatch* org, double dists[][2], struct OrderInfo* order);
 
 void run(struct Dispatch* org, struct OrderInfo order); //integration purposes only -  logic moved to main
+
+/*INTEGRATION FUNCTIONS*/
+int integrateValidateAndGetTruckDistances2(struct Dispatch* org, struct OrderInfo order, double dists[][2]);
+
+double integrateGetTruckByRefereceAndGetSpace(struct Fleet* fleet, int targetRouteSymbol);
+
+void integrateGetDistancesAndSortByLimitingFactor(struct Dispatch org, struct OrderInfo order, double dists[][2]);
+
+int integrateAllFunctions(struct Dispatch* org, struct OrderInfo* order);

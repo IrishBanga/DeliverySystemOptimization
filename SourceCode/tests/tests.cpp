@@ -1190,7 +1190,6 @@ namespace sortByLimitingFactorTests
 	};
 }
 
-
 namespace findTruckAndDiversiontests
 {
 	TEST_CLASS(BlackboxTests) {
@@ -1881,5 +1880,411 @@ public:
 			Assert::AreEqual(1, res);
 		}
 	}
+	};
+}
+
+namespace integrationtests
+{
+	TEST_CLASS(ValidateAndGetTruckDistances2)
+	{
+		TEST_METHOD(ValidateAndGetTruckDistances2_1)
+		{
+			Dispatch org{};
+			org.map = populateMap();
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+			double dists[3][2]{};
+			OrderInfo order = { 1000,2,{22,22}, {} };
+
+			int check =integrateValidateAndGetTruckDistances2(&org,order,dists);
+			
+			Assert::AreEqual(0, check); //beacuse the order is invalid the function shall return zero
+			double expectedDists[3][2] = {};
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual(expectedDists[i][1], dists[i][1]);
+			}
+		}
+		TEST_METHOD(ValidateAndGetTruckDistances2_2)
+		{
+			Dispatch org{};
+			org.map = populateMap();
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+			double dists[3][2]{};
+			OrderInfo order = { 1000,1,{23,24}, {} };
+
+			int check = integrateValidateAndGetTruckDistances2(&org, order, dists);
+
+			Assert::AreEqual(1, check); //order is valid; the function shall return 1
+			double expectedDists[3][2] = { {4.0,YELLOW},{6.0,BLUE},{14.0,GREEN} }; //expected result based on destination
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual(expectedDists[i][1], dists[i][1]);
+			}
+		}
+
+		TEST_METHOD(ValidateAndGetTruckDistances2_3)
+		{
+			Dispatch org{};
+			org.map = populateMap();
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+			double dists[3][2]{};
+			OrderInfo order = { 100,1,{7,24}, {} };
+
+			int check = integrateValidateAndGetTruckDistances2(&org, order, dists);
+
+			Assert::AreEqual(1, check); //order is valid; the function shall return 1
+			double expectedDists[3][2] = { {2.0,GREEN},{10.0,BLUE},{12.0,YELLOW} }; //expected result based on destination
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual(expectedDists[i][1], dists[i][1]);
+			}
+		}
+
+		TEST_METHOD(ValidateAndGetTruckDistances2_4)
+		{
+			Dispatch org{};
+			org.map = populateMap();
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+			double dists[3][2]{};
+			OrderInfo order = { 100,1,{6,8}, {} };
+
+			int check = integrateValidateAndGetTruckDistances2(&org, order, dists);
+
+			Assert::AreEqual(1, check); //order is valid; the function shall return 1
+			double expectedDists[3][2] = { {1.0,BLUE},{2.0,GREEN},{5.0,YELLOW} }; //expected result based on destination
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual(expectedDists[i][1], dists[i][1]);
+			}
+		}
+	};
+	TEST_CLASS(GetTruckByRefereceAndGetSpace)
+	{
+		TEST_METHOD(GetTruckByRefereceAndGetSpace_1)
+		{
+			Fleet current{};
+			double res{};
+			res = integrateGetTruckByRefereceAndGetSpace(&current, BLUE);
+			Assert::AreEqual(-55.0, res); //beacuse there is no truck matching the requierd symbol it should return ERROR CODE -55
+		}
+		TEST_METHOD(GetTruckByRefereceAndGetSpace_2)
+		{
+			Fleet current{};
+			current.B.route = getBlueRoute();
+			current.B.CurrentWeight = 500;
+			current.G.route = getGreenRoute();
+			current.Y.route = getYellowRoute();
+			double res{};
+			res = integrateGetTruckByRefereceAndGetSpace(&current, BLUE);
+  			Assert::AreEqual(0.5, res); //truck matching the given symbol found and expected spaceRemaining %age returned
+		}
+		TEST_METHOD(GetTruckByRefereceAndGetSpace_3)
+		{
+			Fleet current{};
+			current.B.route = getBlueRoute();
+			current.B.CurrentWeight = 500;
+			current.B.CurrentVolume = 36;
+			current.G.route = getGreenRoute();
+			current.Y.route = getYellowRoute();
+			double res{};
+			res = integrateGetTruckByRefereceAndGetSpace(&current, BLUE);
+			Assert::AreEqual(0.0, res); //truck matching the given symbol found and expected spaceRemaining %age returned
+		}
+
+		TEST_METHOD(GetTruckByRefereceAndGetSpace_4)
+		{
+			Fleet current{};
+			current.B.route = getBlueRoute();
+			current.B.CurrentWeight = 500;
+			current.B.CurrentVolume = 24;
+
+			current.G.route = getGreenRoute();
+			current.G.CurrentWeight = 625.0;
+			current.G.CurrentVolume = 35.0;
+
+			current.Y.route = getYellowRoute();
+			current.Y.CurrentWeight = 99.0;
+			current.Y.CurrentVolume = 12.0;
+
+			double res{};
+			res = integrateGetTruckByRefereceAndGetSpace(&current, BLUE);
+			Assert::AreEqual((double)12/36, res); //truck matching the given symbol found and expected spaceRemaining %age returned
+			res = integrateGetTruckByRefereceAndGetSpace(&current, GREEN);
+			Assert::AreEqual((double)1/36, res); //truck matching the given symbol found and expected spaceRemaining %age returned
+			res = integrateGetTruckByRefereceAndGetSpace(&current, YELLOW);
+			Assert::AreEqual((double)24/36, res); //truck matching the given symbol found and expected spaceRemaining %age returned
+
+		}
+
+	}; 
+	TEST_CLASS(GetDistancesAndSort)
+	{
+		TEST_METHOD(GetDistancesAndSort_1) //invalid
+		{
+			double dists[3][2]{};
+			struct Dispatch org {};
+			org.map = populateMap();
+			OrderInfo order = { 0,0,{0,0}, {} };
+			org.current.B.CurrentWeight = 0;
+			org.current.B.CurrentVolume = 0;
+			org.current.G.CurrentWeight = 0;
+			org.current.G.CurrentVolume = 0;
+			org.current.Y.CurrentWeight = 0;
+			org.current.Y.CurrentVolume = 0;
+			
+			
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+
+			integrateGetDistancesAndSortByLimitingFactor(org, order, dists);
+
+			double expectedDists[3][2] = {
+				{0.0, BLUE},
+				{0.0, GREEN},
+				{0.0, YELLOW}
+			};
+
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			}
+		}
+		TEST_METHOD(GetDistancesAndSort_2) //random
+		{
+			double dists[3][2]{};
+			struct Dispatch org {};
+			org.map = populateMap();
+			OrderInfo order = { 1000,1,{11,24}, {} };
+			org.current.B.CurrentWeight = 625.0;
+			org.current.B.CurrentVolume = 2.5;
+			org.current.G.CurrentWeight = 127.0;
+			org.current.G.CurrentVolume = 35.5;
+			org.current.Y.CurrentWeight = 800.0;
+			org.current.Y.CurrentVolume = 12.0;
+
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+
+			integrateGetDistancesAndSortByLimitingFactor(org, order, dists);
+
+			double expectedDists[3][2] = {
+				{2.0, GREEN},
+				{6.0, BLUE},
+				{8.0, YELLOW}
+			};
+
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			}
+		}
+		TEST_METHOD(GetDistancesAndSort_3) //equi
+		{
+			double dists[3][2]{};
+			struct Dispatch org {};
+			org.map = populateMap();
+			OrderInfo order = { 1000,1,{2,2}, {} };
+			org.current.B.CurrentWeight = 625.0;
+			org.current.B.CurrentVolume = 2.5;
+			org.current.G.CurrentWeight = 127.0;
+			org.current.G.CurrentVolume = 35.5;
+			org.current.Y.CurrentWeight = 800.0;
+			org.current.Y.CurrentVolume = 12.0;
+
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+
+			integrateGetDistancesAndSortByLimitingFactor(org, order, dists);
+
+			double expectedDists[3][2] = {
+				{2.0, BLUE},
+				{2.0, YELLOW},
+				{2.0, GREEN}
+			};
+
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			}
+		}
+		TEST_METHOD(GetDistancesAndSort_4) //equi
+		{
+			double dists[3][2]{};
+			struct Dispatch org {};
+			org.map = populateMap();
+			OrderInfo order = { 1000,1,{7,6}, {} };
+			org.current.B.CurrentWeight = 625.0;
+			org.current.B.CurrentVolume = 2.5;
+			org.current.G.CurrentWeight = 127.0;
+			org.current.G.CurrentVolume = 35.5;
+			org.current.Y.CurrentWeight = 1000.0;
+			org.current.Y.CurrentVolume = 12.0;
+
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+
+			integrateGetDistancesAndSortByLimitingFactor(org, order, dists);
+
+			double expectedDists[3][2] = {
+				{3.0, BLUE},
+				{3.0, GREEN},
+				{3.0, YELLOW}
+			};
+
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedDists[i][0], dists[i][0]);
+				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
+			}
+		}
+	}; 
+	TEST_CLASS(MOCK_RUN_ENTIRE_PROGRAM)
+	{
+		TEST_METHOD(MOCK_RUN_ENTIRE_PROGRAM_1)
+		{
+			double dists[3][2]{};
+			struct Dispatch org {};
+			org.map = populateMap();
+			org.current.B.CurrentWeight = 625.0;
+			org.current.B.CurrentVolume = 2.5;
+			org.current.G.CurrentWeight = 127.0;
+			org.current.G.CurrentVolume = 35.5;
+			org.current.Y.CurrentWeight = 1000.0;
+			org.current.Y.CurrentVolume = 12.0;
+			org.nextDayOrders = 0;
+
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+
+			OrderInfo order = { 1000,1.0,{7,6}, {} };
+
+			int done = integrateAllFunctions(&org, &order);
+
+			Assert::AreEqual(INVALID_POINT, done);
+		}
+
+		TEST_METHOD(MOCK_RUN_ENTIRE_PROGRAM_2)
+		{
+			double dists[3][2]{};
+			struct Dispatch org {};
+			org.map = populateMap();
+			org.current.B.CurrentWeight = 625.0;
+			org.current.B.CurrentVolume = 2.5;
+			org.current.G.CurrentWeight = 627.0;
+			org.current.G.CurrentVolume = 35.5;
+			org.current.Y.CurrentWeight = 1000.0;
+			org.current.Y.CurrentVolume = 12.0;
+			org.nextDayOrders = 0;
+
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+
+			OrderInfo order = { 375,1.0,{8,24}, {-1, -1} };
+			struct OrderInfo* orderTemp = &order;
+			int done = integrateAllFunctions(&org, orderTemp);
+
+			Assert::AreEqual(1, done);
+			Assert::AreEqual(1000, org.current.B.CurrentWeight);
+			Assert::AreEqual(3.5, org.current.B.CurrentVolume);
+			Assert::AreEqual(11, orderTemp->diversion.numPoints);
+			Assert::AreEqual((char)DIVERSION, orderTemp->diversion.routeSymbol);
+
+			Route expectedDiversion =
+			{
+				{
+					{17, 21},  // 18V
+					{16, 21},  // 17V
+					{15, 21},  // 16V
+					{14, 21},  // 15V
+					{13, 21},  // 14V
+					{12, 21},  // 13V
+					{11, 21},  // 12V
+					{10, 22},  // 11W
+					{10, 23},  // 11X
+					{9, 24},   // 10Y
+					{8, 24}    // 9Y
+				},
+				11,
+				DIVERSION };
+
+			for (int i = 0; i < 11; i++)
+			{
+				int res = eqPt(expectedDiversion.points[i], order.diversion.points[(11 - 1) - i]);
+				Assert::AreEqual(1, res);
+			}
+		}
+		TEST_METHOD(MOCK_RUN_ENTIRE_PROGRAM_3)
+		{
+			double dists[3][2]{};
+			struct Dispatch org {};
+			org.map = populateMap();
+			org.current.B.CurrentWeight = 625.0;
+			org.current.B.CurrentVolume = 2.5;
+			org.current.G.CurrentWeight = 627.0;
+			org.current.G.CurrentVolume = 35.5;
+			org.current.Y.CurrentWeight = 1000.0;
+			org.current.Y.CurrentVolume = 12.0;
+			org.nextDayOrders = 0;
+
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+
+			OrderInfo order = { 500,1.0,{8,24}, {-1, -1} };
+			struct OrderInfo* orderTemp = &order;
+			int done = integrateAllFunctions(&org, orderTemp);
+
+			Assert::AreEqual(ADDED_NEXT_DAY, done);
+			// The order information should  be stored in the ordersOtherDay[] array
+			Assert::AreEqual(org.ordersOtherDay[org.nextDayOrders - 1].volume, orderTemp->volume);
+			Assert::AreEqual(org.ordersOtherDay[org.nextDayOrders - 1].weight, orderTemp->weight);
+			int res = eqPt(org.ordersOtherDay[org.nextDayOrders - 1].destination, orderTemp->destination);
+			Assert::AreEqual(1, res);
+		}
+
+		TEST_METHOD(MOCK_RUN_ENTIRE_PROGRAM_4)
+		{
+			double dists[3][2]{};
+			struct Dispatch org {};
+			org.map = populateMap();
+			org.current.B.CurrentWeight = 625.0;
+			org.current.B.CurrentVolume = 2.5;
+			org.current.G.CurrentWeight = 627.0;
+			org.current.G.CurrentVolume = 35.5;
+			org.current.Y.CurrentWeight = 1000.0;
+			org.current.Y.CurrentVolume = 12.0;
+			
+			org.nextDayOrders = MAX_ORDERS;
+
+			org.current.B.route = getBlueRoute();
+			org.current.G.route = getGreenRoute();
+			org.current.Y.route = getYellowRoute();
+
+			struct OrderInfo order = { 666, .25, {22, 22}, {-1, -1} };
+			struct OrderInfo* orderTemp = &order;
+			int done = integrateAllFunctions(&org, orderTemp);
+			Assert::AreEqual(MAX_ORDERS, done);
+		}
 	};
 }

@@ -110,16 +110,7 @@ int validate(int weight, double volume, struct Point temp)
 			}
 		}
 	}
-
-	void run(struct Dispatch* org, struct OrderInfo order) //for testing purposes only
-	{
-		double dists[3][2];
-		getTruckDistances2(dists, &org->current, order.destination);
-		sortByLimitingFactor(dists, org);
-		struct OrderInfo* orderTemp = &order;
-		int done = findTruckAndDiversion(org, dists, orderTemp);
-		printf("No of points on diversion route %d\n", orderTemp->diversion.numPoints);
-	}
+	
 
 	int findTruckAndDiversion(struct Dispatch* org, double dists[][2], struct OrderInfo* order)
 	{
@@ -251,4 +242,62 @@ int validate(int weight, double volume, struct Point temp)
 			
 		}
 		return done;
+	}
+
+	void run(struct Dispatch* org, struct OrderInfo order) //for testing purposes only
+	{
+		double dists[3][2];
+		getTruckDistances2(dists, &org->current, order.destination);
+		sortByLimitingFactor(dists, org);
+		struct OrderInfo* orderTemp = &order;
+		int done = findTruckAndDiversion(org, dists, orderTemp);
+		printf("No of points on diversion route %d\n", orderTemp->diversion.numPoints);
+	}
+
+
+	int integrateValidateAndGetTruckDistances2(struct Dispatch* org, struct OrderInfo order, double dists[][2]) //validate+truckDistances
+	{
+		int res = 0;
+		int error = validate(order.weight, order.volume, order.destination);
+		if (!error)
+		{
+			res = 1;
+			getTruckDistances2(dists, &org->current, order.destination);
+		}
+		return res;
+	}
+
+	double integrateGetTruckByRefereceAndGetSpace(struct Fleet* fleet, int targetRouteSymbol) 
+	{
+		struct Truck* temp = getTruckByReference(fleet, targetRouteSymbol);
+		double res = -55.0;
+		if (temp) 
+		{
+			res = getSpaceRemaining(temp);
+		}
+		return res;
+	}
+
+	void integrateGetDistancesAndSortByLimitingFactor(struct Dispatch org, struct OrderInfo order, double dists[][2])
+	{
+		getTruckDistances2(dists, &org.current, order.destination);
+		sortByLimitingFactor(dists, &org);
+	}
+
+	int integrateAllFunctions(struct Dispatch* org, struct OrderInfo* order)
+	{
+		int res = 0;
+		int error = validate(order->weight, order->volume, order->destination);
+		if (!error)
+		{
+			double dists[3][2];
+			getTruckDistances2(dists, &org->current, order->destination);
+			sortByLimitingFactor(dists, org);
+			res = findTruckAndDiversion(org, dists, order);
+		}
+		else
+		{
+			res = error;
+		}
+		return res;
 	}
