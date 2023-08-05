@@ -113,10 +113,51 @@ int findTruckAndDiversion(struct Dispatch* org, double dists[][2], struct OrderI
 void run(struct Dispatch* org, struct OrderInfo order); //integration purposes only -  logic moved to main
 
 /*INTEGRATION FUNCTIONS*/
+
+/***
+* Combines the functionalities of validate() and getTruckDistances2() functions.
+* Validates the order's weight and volume against the limitation requirements.
+* If the order is valid, it sets the result to 1 (success) and calculates the distances between the destination point and the closest points on the routes of each truck in the fleet.
+* The calculated distances and color codes of the trucks are stored in the 'dists' 2D array.
+* @param org - a pointer to a struct Dispatch representing the dispatch organization
+* @param order - a struct OrderInfo object representing the order to be validated and processed
+* @param dists - a 2D array representing the distances and truck color codes; this array will be populated with calculated distances and color codes
+* @returns - an integer value indicating the success of validation and distance calculation: 1 if the order is valid and distances calculated, 0 if the order is invalid
+*/
 int integrateValidateAndGetTruckDistances2(struct Dispatch* org, struct OrderInfo order, double dists[][2]);
 
+/***
+* Combines the functionalities of getTruckByReference and getSpaceRemaining.
+* Retrieves the truck from the fleet based on its route symbol.
+* If the truck is found, it calculates the limiting factor for the truck by comparing percentages of current weight and current volume.
+* The limiting factor is the smaller percentage between weight and volume.
+* @param fleet - a pointer to a struct Fleet representing the fleet of trucks
+* @param targetRouteSymbol - an integer value representing the route symbol of the desired truck
+* @returns - a double value representing the calculated limiting factor, or -55.0 if the truck is not found
+*/
 double integrateGetTruckByRefereceAndGetSpace(struct Fleet* fleet, int targetRouteSymbol);
 
+/***
+* Integrates the functionalities of getTruckDistances2 and sortByLimitingFactor.
+* Calculates the distances between the given destination point and the closest points on the routes of each truck in the fleet.
+* Then it sorts the distances in ascending order along with corresponding truck color codes.
+* If any of the trucks are equidistant it would sort them in descending order of spaceRemaining in those trucks
+* @param org - a struct Dispatch representing the parent organization; used to make calls to other functions
+* @param order - a struct OrderInfo representing the order for which distances need to be calculated and sorted
+* @param dists - a 2D array representing the distances and truck color codes; this array will be populated with calculated distances and color codes
+*/
 void integrateGetDistancesAndSortByLimitingFactor(struct Dispatch org, struct OrderInfo order, double dists[][2]);
 
+/***
+* Integrates all relevant functionalities for processing an order in the dispatch organization.
+* Validates the order's weight and volume against the limitation requirements.
+* If the order is valid, it proceeds to calculate the truck distances and sort them by limiting factor.
+* Finally, it attempts to assign the order to a truck and calculate the diversion route if necessary using 'findTruckAndDiversion'.
+* @param org - a pointer to a struct Dispatch representing the dispatch organization
+* @param order - a pointer to a struct OrderInfo representing the order to be processed
+* @returns - an integer value indicating the success of assigning the order:
+*            1 if the order is assigned to a truck,
+*            0 if not assigned,
+*            Or an error code defined in the macros if the order is valid and cannot be assigned
+*/
 int integrateAllFunctions(struct Dispatch* org, struct OrderInfo* order);

@@ -688,9 +688,9 @@ public:
 		int GCP = getClosestPoint(&current.G.route, destination);
 		int YCP = getClosestPoint(&current.Y.route, destination);
 
-		double B_dist = distance(&current.B.route.points[BCP], &destination); 
-		double G_dist = distance(&current.G.route.points[GCP], &destination); 
-		double Y_dist = distance(&current.Y.route.points[YCP], &destination); 
+		double B_dist = distance(&current.B.route.points[BCP], &destination);
+		double G_dist = distance(&current.G.route.points[GCP], &destination);
+		double Y_dist = distance(&current.Y.route.points[YCP], &destination);
 
 		Assert::AreEqual(G_dist, sortedArr[0][0]);
 		Assert::AreEqual(B_dist, sortedArr[1][0]);
@@ -801,9 +801,9 @@ public:
 		int GCP = getClosestPoint(&current.G.route, destination);
 		int YCP = getClosestPoint(&current.Y.route, destination);
 
-		double B_dist = distance(&current.B.route.points[BCP], &destination); 
-		double G_dist = distance(&current.G.route.points[GCP], &destination); 
-		double Y_dist = distance(&current.Y.route.points[YCP], &destination); 
+		double B_dist = distance(&current.B.route.points[BCP], &destination);
+		double G_dist = distance(&current.G.route.points[GCP], &destination);
+		double Y_dist = distance(&current.Y.route.points[YCP], &destination);
 
 		Assert::AreEqual(B_dist, sortedArr[0][0]);
 		Assert::AreEqual(G_dist, sortedArr[1][0]);
@@ -1650,7 +1650,7 @@ public:
 		dists[0][0] = 3.0;
 		dists[0][1] = YELLOW;
 
-		org.nextDayOrders = MAX_ORDERS-1;
+		org.nextDayOrders = MAX_ORDERS - 1;
 
 		struct OrderInfo order = { 666, .25, {22, 22}, {-1, -1} };
 		struct OrderInfo* orderTemp = &order;
@@ -1658,9 +1658,9 @@ public:
 
 		Assert::AreEqual(ADDED_NEXT_DAY, done);
 		// The order information should  be stored in the ordersOtherDay[] array
-		Assert::AreEqual(org.ordersOtherDay[org.nextDayOrders-1].volume, orderTemp->volume);
-		Assert::AreEqual(org.ordersOtherDay[org.nextDayOrders-1].weight, orderTemp->weight);
-		int res = eqPt(org.ordersOtherDay[org.nextDayOrders-1].destination, orderTemp->destination);
+		Assert::AreEqual(org.ordersOtherDay[org.nextDayOrders - 1].volume, orderTemp->volume);
+		Assert::AreEqual(org.ordersOtherDay[org.nextDayOrders - 1].weight, orderTemp->weight);
+		int res = eqPt(org.ordersOtherDay[org.nextDayOrders - 1].destination, orderTemp->destination);
 		Assert::AreEqual(1, res);
 	}
 	TEST_METHOD(WB_findTruckAndDiversion_2) // Testing the outcome in case the fleet limit as well as the order limit(of 432) for next day is exceeded.
@@ -1735,7 +1735,7 @@ public:
 			{
 				{17, 21},  // 18V
 				{16, 21},  // 17V
-		        {15, 21},  // 16V
+				{15, 21},  // 16V
 				{14, 21},  // 15V
 				{13, 21},  // 14V
 				{12, 21},  // 13V
@@ -1897,8 +1897,8 @@ namespace integrationtests
 			double dists[3][2]{};
 			OrderInfo order = { 1000,2,{22,22}, {} };
 
-			int check =integrateValidateAndGetTruckDistances2(&org,order,dists);
-			
+			int check = integrateValidateAndGetTruckDistances2(&org, order, dists);
+
 			Assert::AreEqual(0, check); //beacuse the order is invalid the function shall return zero
 			double expectedDists[3][2] = {};
 			for (int i = 0; i < 3; i++)
@@ -1988,7 +1988,7 @@ namespace integrationtests
 			current.Y.route = getYellowRoute();
 			double res{};
 			res = integrateGetTruckByRefereceAndGetSpace(&current, BLUE);
-  			Assert::AreEqual(0.5, res); //truck matching the given symbol found and expected spaceRemaining %age returned
+			Assert::AreEqual(0.5, res); //truck matching the given symbol found and expected spaceRemaining %age returned
 		}
 		TEST_METHOD(GetTruckByRefereceAndGetSpace_3)
 		{
@@ -2020,18 +2020,18 @@ namespace integrationtests
 
 			double res{};
 			res = integrateGetTruckByRefereceAndGetSpace(&current, BLUE);
-			Assert::AreEqual((double)12/36, res); //truck matching the given symbol found and expected spaceRemaining %age returned
+			Assert::AreEqual((double)12 / 36, res); //truck matching the given symbol found and expected spaceRemaining %age returned
 			res = integrateGetTruckByRefereceAndGetSpace(&current, GREEN);
-			Assert::AreEqual((double)1/36, res); //truck matching the given symbol found and expected spaceRemaining %age returned
+			Assert::AreEqual((double)1 / 36, res); //truck matching the given symbol found and expected spaceRemaining %age returned
 			res = integrateGetTruckByRefereceAndGetSpace(&current, YELLOW);
-			Assert::AreEqual((double)24/36, res); //truck matching the given symbol found and expected spaceRemaining %age returned
+			Assert::AreEqual((double)24 / 36, res); //truck matching the given symbol found and expected spaceRemaining %age returned
 
 		}
 
-	}; 
+	};
 	TEST_CLASS(GetDistancesAndSort)
 	{
-		TEST_METHOD(GetDistancesAndSort_1) //invalid
+		TEST_METHOD(GetDistancesAndSort_1) //invalid order destination ( order validity not integrated )
 		{
 			double dists[3][2]{};
 			struct Dispatch org {};
@@ -2043,13 +2043,13 @@ namespace integrationtests
 			org.current.G.CurrentVolume = 0;
 			org.current.Y.CurrentWeight = 0;
 			org.current.Y.CurrentVolume = 0;
-			
-			
+
+
 			org.current.B.route = getBlueRoute();
 			org.current.G.route = getGreenRoute();
 			org.current.Y.route = getYellowRoute();
 
-			integrateGetDistancesAndSortByLimitingFactor(org, order, dists);
+			integrateGetDistancesAndSortByLimitingFactor(org, order, dists); //despite order invalidity, will calculate distances
 
 			double expectedDists[3][2] = {
 				{0.0, BLUE},
@@ -2063,7 +2063,7 @@ namespace integrationtests
 				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
 			}
 		}
-		TEST_METHOD(GetDistancesAndSort_2) //random
+		TEST_METHOD(GetDistancesAndSort_2) //random case to demonstrate integration
 		{
 			double dists[3][2]{};
 			struct Dispatch org {};
@@ -2094,7 +2094,7 @@ namespace integrationtests
 				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
 			}
 		}
-		TEST_METHOD(GetDistancesAndSort_3) //equi
+		TEST_METHOD(GetDistancesAndSort_3) //equidistant trucks case; will consider the limiting factor for trucks
 		{
 			double dists[3][2]{};
 			struct Dispatch org {};
@@ -2125,7 +2125,7 @@ namespace integrationtests
 				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
 			}
 		}
-		TEST_METHOD(GetDistancesAndSort_4) //equi
+		TEST_METHOD(GetDistancesAndSort_4) //another equidistant trucks case; confirming proper integration of both functions
 		{
 			double dists[3][2]{};
 			struct Dispatch org {};
@@ -2156,10 +2156,10 @@ namespace integrationtests
 				Assert::AreEqual((int)expectedDists[i][1], (int)dists[i][1]);
 			}
 		}
-	}; 
+	};
 	TEST_CLASS(MOCK_RUN_ENTIRE_PROGRAM)
 	{
-		TEST_METHOD(MOCK_RUN_ENTIRE_PROGRAM_1)
+		TEST_METHOD(MOCK_RUN_ENTIRE_PROGRAM_1) //repliaca of run function used in previous milestones; includes validate() function too
 		{
 			double dists[3][2]{};
 			struct Dispatch org {};
@@ -2176,7 +2176,7 @@ namespace integrationtests
 			org.current.G.route = getGreenRoute();
 			org.current.Y.route = getYellowRoute();
 
-			OrderInfo order = { 1000,1.0,{7,6}, {} };
+			OrderInfo order = { 1000,1.0,{7,6}, {} }; //invalid destination; function will return appropriate error code from validate()
 
 			int done = integrateAllFunctions(&org, &order);
 
@@ -2190,7 +2190,7 @@ namespace integrationtests
 			org.map = populateMap();
 			org.current.B.CurrentWeight = 625.0;
 			org.current.B.CurrentVolume = 2.5;
-			org.current.G.CurrentWeight = 627.0;
+			org.current.G.CurrentWeight = 627.0; //making the first preferred truck invalid to carry the order
 			org.current.G.CurrentVolume = 35.5;
 			org.current.Y.CurrentWeight = 1000.0;
 			org.current.Y.CurrentVolume = 12.0;
@@ -2200,12 +2200,12 @@ namespace integrationtests
 			org.current.G.route = getGreenRoute();
 			org.current.Y.route = getYellowRoute();
 
-			OrderInfo order = { 375,1.0,{8,24}, {-1, -1} };
+			OrderInfo order = { 375,1.0,{8,24}, {-1, -1} }; //valid order; no diversin needed if fleet is empty but diversion will be calculated in this case
 			struct OrderInfo* orderTemp = &order;
 			int done = integrateAllFunctions(&org, orderTemp);
 
 			Assert::AreEqual(1, done);
-			Assert::AreEqual(1000, org.current.B.CurrentWeight);
+			Assert::AreEqual(1000, org.current.B.CurrentWeight); //confirming that the current status of the truck was updated correctly
 			Assert::AreEqual(3.5, org.current.B.CurrentVolume);
 			Assert::AreEqual(11, orderTemp->diversion.numPoints);
 			Assert::AreEqual((char)DIVERSION, orderTemp->diversion.routeSymbol);
@@ -2228,7 +2228,7 @@ namespace integrationtests
 				11,
 				DIVERSION };
 
-			for (int i = 0; i < 11; i++)
+			for (int i = 0; i < 11; i++) // confirming if the diversion route is calculated correctly
 			{
 				int res = eqPt(expectedDiversion.points[i], order.diversion.points[(11 - 1) - i]);
 				Assert::AreEqual(1, res);
@@ -2251,11 +2251,11 @@ namespace integrationtests
 			org.current.G.route = getGreenRoute();
 			org.current.Y.route = getYellowRoute();
 
-			OrderInfo order = { 500,1.0,{8,24}, {-1, -1} };
+			OrderInfo order = { 500,1.0,{8,24}, {-1, -1} }; //order valid; no truck in fleet can carry the order; shall be placed in next day array
 			struct OrderInfo* orderTemp = &order;
 			int done = integrateAllFunctions(&org, orderTemp);
 
-			Assert::AreEqual(ADDED_NEXT_DAY, done);
+			Assert::AreEqual(ADDED_NEXT_DAY, done); //validating the return value against the expected outcome
 			// The order information should  be stored in the ordersOtherDay[] array
 			Assert::AreEqual(org.ordersOtherDay[org.nextDayOrders - 1].volume, orderTemp->volume);
 			Assert::AreEqual(org.ordersOtherDay[org.nextDayOrders - 1].weight, orderTemp->weight);
@@ -2274,17 +2274,17 @@ namespace integrationtests
 			org.current.G.CurrentVolume = 35.5;
 			org.current.Y.CurrentWeight = 1000.0;
 			org.current.Y.CurrentVolume = 12.0;
-			
-			org.nextDayOrders = MAX_ORDERS;
+
+			org.nextDayOrders = MAX_ORDERS; //system at limit for maximum orders for the next day
 
 			org.current.B.route = getBlueRoute();
 			org.current.G.route = getGreenRoute();
 			org.current.Y.route = getYellowRoute();
 
-			struct OrderInfo order = { 666, .25, {22, 22}, {-1, -1} };
+			struct OrderInfo order = { 666, .25, {22, 22}, {-1, -1} }; //valid order
 			struct OrderInfo* orderTemp = &order;
 			int done = integrateAllFunctions(&org, orderTemp);
-			Assert::AreEqual(MAX_ORDERS, done);
+			Assert::AreEqual(MAX_ORDERS, done); //verifying the outcome against expected results
 		}
 	};
 }
