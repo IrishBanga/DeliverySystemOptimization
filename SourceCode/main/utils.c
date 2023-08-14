@@ -166,8 +166,9 @@ int validate(int weight, double volume, struct Point temp)
 						else
 						{
 							struct Route shortestTemp = { {0,0},0,DIVERSION };
-							shortestTemp = shortestPath(&org->map, order->destination,truck->route.points[i] );
-							if (shortestTemp.numPoints!=0 // && //shortestTemp.numPoints <= shortest.numPoints //not applicable since diagonals still travel more
+							//shortestTemp = shortestPath(&org->map, truck->route.points[i],order->destination );
+							shortestTemp = shortestPath(&org->map, order->destination, truck->route.points[i]);  //ORIGINAL ; MODIFIED ABOVE
+							if (shortestTemp.numPoints!=0 // && shortestTemp.numPoints <= shortest.numPoints //not applicable since diagonals still travel more
 								//&& //might be redundant or can cause logical error
 								//(distance(&shortestTemp.points[0], &shortestTemp.points[shortestTemp.numPoints - 1]) <= (distance(&shortest.points[0], &shortest.points[shortest.numPoints - 1])))
 								//(distance(&shortestTemp.points[0], &truck->route.points[i]) <= (distance(&shortest.points[0], &truck->route.points[i - 1])))
@@ -181,7 +182,7 @@ int validate(int weight, double volume, struct Point temp)
 								for (int i = 1; i < shortestTemp.numPoints; i++) {
 									dist2 += distance(&shortestTemp.points[i - 1], &shortestTemp.points[i]);
 								}
-								if (dist2 < dist1)
+								if (dist2 <= dist1)
 								{
 									shortest = shortestTemp;
 									shortestPoint = i;
@@ -192,13 +193,114 @@ int validate(int weight, double volume, struct Point temp)
 					truck->CurrentVolume += order->volume;
 					truck->CurrentWeight += order->weight;
 					done = 1;
+
+
 					//addPtToRoute(&order->diversion, truck->route.points[shortestPoint]);
-					for (int i = 0; i < shortest.numPoints; i++) //copying the shortest route to the OrderInfo struct
+					int diagonalPointsCount = 0;
+					struct Route resultFinal = { {0,0}, 0, DIVERSION };
+					struct Point p1 = { 0,0 };
+					struct Point p2 = { 1,1 };
+					addPtToRoute(&order->diversion, shortest.points[0]);
+					for (int i = 1; i < shortest.numPoints; i++)
 					{
-						addPtToRoute(&order->diversion, shortest.points[i]);
+						if (distance(&shortest.points[i], &shortest.points[i + 2]) == distance(&p1, &p2) && (i < (shortest.numPoints - 3)))
+						{
+							addPtToRoute(&order->diversion, shortest.points[i]);
+							i++;
+							diagonalPointsCount++;
+						}
+						else
+						{
+							addPtToRoute(&order->diversion, shortest.points[i]);
+						}
 					}
-					//addPtToRoute(&order->diversion, order->destination);
-					order->diversion.routeSymbol = DIVERSION;
+
+					
+					shortest = order->diversion;
+					struct Route tempRoute = { {0,0},0,DIVERSION };
+					addPtToRoute(&tempRoute, shortest.points[0]);
+					addPtToRoute(&tempRoute, shortest.points[1]);
+					for (int i = 2; i < shortest.numPoints; i++) 
+					{
+						struct Route tempPoints = getPossibleMoves(&org->map, tempRoute.points[tempRoute.numPoints - 1], (struct Point) { -1, -1 });
+						struct Route diagonalPoints = { {0, 0}, 0, 0 };
+						int target = -1;
+						for (int j = 0; j < tempPoints.numPoints; j++) 
+						{
+							if (distance(&tempPoints.points[j], &tempRoute.points[tempRoute.numPoints - 1]) == distance(&p1, &p2)) 
+							{
+								addPtToRoute(&diagonalPoints, tempPoints.points[j]);
+							}
+						}
+						int bestMove = -1;
+						bestMove = getClosestPoint(&diagonalPoints, shortest.points[shortest.numPoints - 1]);
+						if (bestMove != -1 &&
+							(distance(&shortest.points[i], &shortest.points[i + 2]) != 2) &&
+							(distance(&diagonalPoints.points[bestMove], &shortest.points[shortest.numPoints - 1]) < distance(&shortest.points[i], &shortest.points[shortest.numPoints - 1]))) 
+						{
+							addPtToRoute(&tempRoute, diagonalPoints.points[bestMove]);
+						}
+						else if ((!eqPt(shortest.points[i], tempRoute.points[tempRoute.numPoints - 1]))) 
+						{
+							addPtToRoute(&tempRoute, shortest.points[i]);
+						}
+					}
+
+					double dist1 = 0.0, dist2 = 0.0;
+					for (int i = 1; i < tempRoute.numPoints; i++)
+					{
+						dist1 += distance(&tempRoute.points[i - 1], &tempRoute.points[i]); //calculating the total ditance travelled on a path
+					}
+					for (int i = 1; i < order->diversion.numPoints; i++)
+					{
+						dist2 += distance(&order->diversion.points[i - 1], &order->diversion.points[i]);
+					}
+					if (dist1 < dist2)
+					{
+						order->diversion = tempRoute;
+					}
+
+					//shortest = order->diversion;
+					//struct Route copy = shortest;  
+					//order->diversion.numPoints = 0;
+					//order->diversion = (struct Route){ {0,0},0,DIVERSION };
+					//addPtToRoute(&order->diversion, shortest.points[0]);
+					//addPtToRoute(&order->diversion, shortest.points[1]);
+					//for (int i = 2; i < shortest.numPoints; i++)
+					//{
+					//		//struct Route tempPoints= getPossibleMovesORG(&org->map, shortest.points[i-1], shortest.points[i-2]);
+					//		struct Route tempPoints = getPossibleMovesORG(&org->map, order->diversion.points[order->diversion.numPoints-1], (struct Point){-1,-1});
+					//		struct Route diagonalPoints = { {0,0},0,0 };
+					//		int target = -1;
+					//		for (int j = 0; j < tempPoints.numPoints; j++)
+					//		{
+					//			if (distance(&tempPoints.points[j], &order->diversion.points[order->diversion.numPoints - 1]) == distance(&p1, &p2))
+					//			{
+					//				addPtToRoute(&diagonalPoints, tempPoints.points[j]);
+					//			}
+					//		}
+					//		//diagonal moves are calculated
+					//		int bestMove = -1;
+					//		bestMove= getClosestPoint(&diagonalPoints,shortest.points[shortest.numPoints-1]);
+					//		if (bestMove != -1 
+					//			&& (distance(&shortest.points[i],&shortest.points[i+2])!=2)
+					//				//&& (distance(&shortest.points[i], &shortest.points[i + 2]) != (1+distance(&p1, &p2))))
+					//			&& (distance(&diagonalPoints.points[bestMove], &shortest.points[shortest.numPoints - 1]) 
+					//				< distance(&shortest.points[i], &shortest.points[shortest.numPoints - 1])))
+					//		{
+					//			addPtToRoute(&order->diversion, diagonalPoints.points[bestMove]);
+					//			//i++;
+					//		}
+					//		else if((!eqPt(shortest.points[i],order->diversion.points[order->diversion.numPoints-1]))
+					//			//&& (distance(&shortest.points[i], &diagonalPoints.points[bestMove], &shortest.points[shortest.numPoints - 1])
+					//				//< distance(&order->diversion.points[order->diversion.numPoints - 1], &shortest.points[shortest.numPoints - 1]))
+					//			)
+					//		{
+					//			addPtToRoute(&order->diversion, shortest.points[i]);
+					//		}
+					//}
+
+ 					order->diversion.routeSymbol = DIVERSION;
 
 					printf("DIVERSION CALCULATED\n");
 					printf("Ship on %s LINE,", truckNames[i]);

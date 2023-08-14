@@ -233,54 +233,66 @@ struct Route shortestPath(const struct Map* map, const struct Point start, const
 	struct Route destP = { {0,0},0,0 };
 	struct Point invalidP = { -1,-1 };
 
-	/* OTHER CHANGES in DEVELOPMENT PROCESS ;NOT INCLUDED IN FINAL SOLUTION FOR - MS4 */
-	//destP = getPossibleMoves(map, dest, invalidP); //getting all valid points adjacent to destination
-	//int destPclosest = getClosestPoint(&destP,dest); //selecting the closest valid point; ideal for end of delivery
-	//struct Point destTemp = destP.points[destPclosest];
-	///*for (int t = 0; t < destP.numPoints; t++)
-	//{
-
-	//}*/
-	////while (!eqPt(current, dest) && close >= 0)
-
 	struct Point p1 = { 0,0 };
-	struct Point p2 = { 1,1 };  //further checks to ensure diagonal near destination isn't discarded
-	while (!eqPt(current, dest) && distance(&current, &dest)!=1.0 && distance(&current, &dest) != distance(&p1,&p2) && close >= 0 && result.numPoints<625)
+	struct Point p2 = { 1,1 };  //further checks to ensure diagonal near destination isn't discarded 
+	int count = 0;
+	while ((distance(&current, &dest) != 1.0) && (distance(&current, &dest) != distance(&p1, &p2)) && (close >= 0) && (count < 75))
 	{
-		possible = getPossibleMoves(map, current, last);
+		possible = getPossibleMoves2(map, current, last);
 		close = getClosestPoint(&possible, dest);
-		
-		/* OTHER CHANGES in DEVELOPMENT PROCESS ;NOT INCLUDED IN FINAL SOLUTION FOR - MS4 */
-		//close = getClosestPoint(&possible, destTemp);
-		
+		/* SHORTEST PATH LOGIC RESTORED TO ORGINAL LOGIC*/
 		if (close >= 0)
 		{
-			if (result.numPoints == 1) //prohibiting diagonal move (starting) from the destination location
-			{
-				last = current;
-				int done = 0;
-				int t=0;
-				int targetIndex = 0;
-				for ( t = 0; t < possible.numPoints&&!done; t++)
-				{
-					if (distance(&possible.points[t], &current) == 1)
-					{
-						done = 1;
-						targetIndex = t;
-					}
-				}
-				current = possible.points[targetIndex];
-				addPtToRoute(&result, current);
-			}
-			else
-			{
-				last = current;
-				current = possible.points[close];
-				addPtToRoute(&result, current);
-			}
+			count++;
+			last = current;
+			current = possible.points[close];
+			addPtToRoute(&result, current);
 		}
 	}
 	addPtToRoute(&result, dest); //adding the destination point to result route; aids in findTruckAndDiversion() logic
+	
+	/*INITIAL PATH TRIMMING LOGIC - MOVED INTO THE findTruckAndDiversion() function */
+	//int diagonalPointsCount = 0;
+	//struct Route resultFinal= { {0,0}, 0, DIVERSION };
+	////addPtToRoute(&resultFinal, result.points[0]);
+	//for (int i = 0; i < result.numPoints; i++)
+	//{
+	//	if (distance(&result.points[i], &result.points[i+2]) == distance(&p1, &p2)&& i < result.numPoints - 3)
+	//	{
+	//		addPtToRoute(&resultFinal, result.points[i]);
+	//		i++;
+	//	}
+	//	else
+	//	{
+	//		addPtToRoute(&resultFinal,result.points[i]);
+	//	}
+	//}
+	//result.numPoints = 0;// = { {0,0}, 0, DIVERSION };
+	//for (int i = 0; i < resultFinal.numPoints; i++)
+	//{
+	//	addPtToRoute(&result, resultFinal.points[i]);
+	//}
+	return result;
+}
+
+struct Route getPossibleMoves2(const struct Map* map, const struct Point p1, const struct Point backpath)
+{
+	struct Route result = { {0,0}, 0, DIVERSION };
+
+	if (p1.row > 0 )
+	{
+		if(map->squares[p1.row - 1][p1.col] != 1) addPointToRouteIfNot(&result, p1.row - 1, p1.col, backpath);	// square above
+		//if (p1.col > 0 && map->squares[p1.row - 1][p1.col-1] != 1) addPointToRouteIfNot(&result, p1.row - 1, p1.col-1, backpath);	// top left
+		//if (p1.col < (map->numCols-1) && map->squares[p1.row - 1][p1.col + 1] != 1) addPointToRouteIfNot(&result, p1.row - 1, p1.col + 1, backpath);	// top right
+	}
+	if(p1.col > 0 && map->squares[p1.row][p1.col - 1] != 1)addPointToRouteIfNot(&result, p1.row, p1.col - 1, backpath);	// left
+	if (p1.col < (map->numCols - 1) && map->squares[p1.row][p1.col + 1] != 1)addPointToRouteIfNot(&result, p1.row, p1.col + 1, backpath);	// right
+	if (p1.row < (map->numRows - 1))
+	{
+		if (map->squares[p1.row + 1][p1.col] != 1) addPointToRouteIfNot(&result, p1.row + 1, p1.col, backpath);	// square below
+		//if (p1.col > 0 && map->squares[p1.row + 1][p1.col - 1] != 1) addPointToRouteIfNot(&result, p1.row + 1, p1.col - 1, backpath);	// bot left
+		//if (p1.col < (map->numCols - 1) && map->squares[p1.row + 1][p1.col + 1] != 1) addPointToRouteIfNot(&result, p1.row + 1, p1.col + 1, backpath);	// top right
+	}
 	return result;
 }
 
@@ -288,13 +300,13 @@ struct Route getPossibleMoves(const struct Map* map, const struct Point p1, cons
 {
 	struct Route result = { {0,0}, 0, DIVERSION };
 
-	if (p1.row > 0 )
+	if (p1.row > 0)
 	{
-		if(map->squares[p1.row - 1][p1.col] != 1) addPointToRouteIfNot(&result, p1.row - 1, p1.col, backpath);	// square above
+		if (map->squares[p1.row - 1][p1.col] != 1) addPointToRouteIfNot(&result, p1.row - 1, p1.col, backpath);	// square above
 		if (p1.col > 0 && map->squares[p1.row - 1][p1.col-1] != 1) addPointToRouteIfNot(&result, p1.row - 1, p1.col-1, backpath);	// top left
 		if (p1.col < (map->numCols-1) && map->squares[p1.row - 1][p1.col + 1] != 1) addPointToRouteIfNot(&result, p1.row - 1, p1.col + 1, backpath);	// top right
 	}
-	if(p1.col > 0 && map->squares[p1.row][p1.col - 1] != 1)addPointToRouteIfNot(&result, p1.row, p1.col - 1, backpath);	// left
+	if (p1.col > 0 && map->squares[p1.row][p1.col - 1] != 1)addPointToRouteIfNot(&result, p1.row, p1.col - 1, backpath);	// left
 	if (p1.col < (map->numCols - 1) && map->squares[p1.row][p1.col + 1] != 1)addPointToRouteIfNot(&result, p1.row, p1.col + 1, backpath);	// right
 	if (p1.row < (map->numRows - 1))
 	{

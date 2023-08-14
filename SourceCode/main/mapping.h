@@ -152,7 +152,8 @@ struct Route shortestPath(const struct Map* map, const struct Point start, const
 * @param backpath - the previous point we visited on the path we travelled so we will exclude travelling backwards.
 * @returns - a collection of adjacent points we could potentially move to.
 */
-struct Route getPossibleMoves(const struct Map* map, const struct Point p1, const struct Point backpath);
+struct Route getPossibleMoves2(const struct Map* map, const struct Point p1, const struct Point backpath); //MODIFIED VERSION (DIAGONAL MOVES PROHIBITED)
+struct Route getPossibleMoves(const struct Map* map, const struct Point p1, const struct Point backpath); //ORIGINAL VERSION
 
 /**
 * Calculates the Euclidian distance from every point in a route to a single point and returns the 
