@@ -32,7 +32,7 @@ int main(void)
 	seneca.current.Y.route = getYellowRoute();
 	seneca.nextDayOrders = 0;
 	
-	printMap(&routeMap, 1, 1); //currently, printMap has been modified to print rows with spaces before and after the identifying characters
+	//printMap(&routeMap, 1, 1); //currently, printMap has been modified to print rows with spaces before and after the identifying characters
 	printf("=================\n"
 		   "Seneca Deliveries\n"
 		   "=================\n");
@@ -72,7 +72,7 @@ int main(void)
 				int error= validate(wt, vol,check);
 				if (!error) /* WILL IMPLEMENT A SPECIAL ERROR CODE MESSAGE LATER */
 				{
-					printf("Initial validation successful\n");
+					//printf("Initial validation successful\n");
 					struct OrderInfo order = { wt,vol,check,{-1,-1} };
 					//run(&seneca, order); //used for testing purposes
 
@@ -81,7 +81,7 @@ int main(void)
 					sortByLimitingFactor(dists,&seneca);
 					struct OrderInfo* orderTemp = &order;
 					done = findTruckAndDiversion(&seneca, dists, orderTemp);
-					printf("No of points on diversion route %d\n", orderTemp->diversion.numPoints);
+					//printf("No of points on diversion route %d\n", orderTemp->diversion.numPoints);
 				}
 				else if (error == INVALID_WEIGHT) 
 				{

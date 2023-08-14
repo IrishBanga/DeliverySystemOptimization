@@ -302,8 +302,8 @@ int validate(int weight, double volume, struct Point temp)
 
  					order->diversion.routeSymbol = DIVERSION;
 
-					printf("DIVERSION CALCULATED\n");
-					printf("Ship on %s LINE,", truckNames[i]);
+					//printf("DIVERSION CALCULATED\n");
+					printf("Ship on %s LINE, divert:", truckNames[i]);
 
 
 					/* OTHER CHANGES in DEVELOPMENT PROCESS ;NOT INCLUDED IN FINAL SOLUTION FOR - MS4 */
